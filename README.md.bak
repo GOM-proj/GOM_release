@@ -64,6 +64,7 @@ This project has the following directory structure (e.g.,):
     + ./Projects/MB_test/
       + `Note: this is the Mobile Bay test case, and this folder contains barotropic and baroclinic test cases`
       +  1_barotropic_test/
+        + `this is the "makefile"`
         + ./input
         + ./output
       + ./`your executable must be located here`
