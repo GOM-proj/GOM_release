@@ -30,6 +30,7 @@ This project has the following directory structure (e.g.,):
     + This is the GOM version update notes.
     
 Note 1: there are "place_holding.txt" in some folders, and this is nothing but to keep the folder structure since Github does not allow to keep an empty folder.
+
 Note 2: one of the input files, "hurricane_ser.inp", in Projects/MB_test/2_baroclinic_test/input/, is included as a zip file since there is a file size limit in Githup. So, you should unzip it first.
         
 ## 5. Compiling and Executing the code:
