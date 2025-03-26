@@ -77,7 +77,7 @@ This project has the following directory structure (e.g.,):
         + `this is the "makefile"`
       + / *.f90
         + `these are the source codes`
-  	 + GOM_Manual_Rv1.0.0_draft_v1.pdf
+    + ./GOM_Manual_Rv1.0.0_draft_v1.pdf
       + `this is the user manual` for this version
   + ./README.TXT
     + This is the GOM version update notes.
