@@ -66,12 +66,12 @@ This project has the following directory structure (e.g.,):
       + 1_barotropic_test/
         + ./input
         + ./output
-      + ./`your executable must be located here`
+        + ./`your executable must be located here`
 
       + 2_baroclinic_test/
-      + ./input
-      + ./output
-      + ./`your executable must be located here`
+        + ./input
+        + ./output
+        + ./`your executable must be located here`
     + /source
       + /release/makefile
         + `this is the "makefile"`
