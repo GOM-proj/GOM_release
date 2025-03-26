@@ -631,8 +631,8 @@ C31	Wind & pressure data type #2: using measured hurricane data or wind model da
 !										188 ~ 193 julian day
 C31                 
 C31	hurricane_flag				hurricane_data_type		hurricane_interp_method		hurricane_dt
-		1								1								1  					   		21600			! 6 hourly data		
-!		0								1								1  					   		21600			! 6 hourly data		
+!		1								1								1  					   		21600			! 6 hourly data		
+		0								1								1  					   		21600			! 6 hourly data		
 !=============================================================================!
 C31_1	Hurricane start/end-year/month/day
 !		Activate if hurricane_flag == 1
@@ -646,8 +646,8 @@ C31_1	Hurricane start/end-year/month/day
 !		
 C31_1	hurricane_start_year		hurricane_start_month	hurricane_start_day
 C31_1	hurricane_end_year		hurricane_end_month		hurricane_end_day
-		2010							8								1
-		2010							9								30
+!		2010							8								1
+!		2010							9								30
 !=============================================================================!
 C32	Wind & pressure data type #3: using analytical hurricane data
 !		(not yet finished)
