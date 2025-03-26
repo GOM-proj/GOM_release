@@ -9,9 +9,11 @@ Download the project folder:
   + Click "Download ZIP"
   
 GOM is tested only with "gfortran", thus you need to install "gfortran" to compile the source codes. You also need to install "make" to compile the source codes.
+
 If you are a Linux user:
-  + sudo apt-get install gfortran
-  + sudo apt install make
+  + $sudo apt-get install gfortran
+  + $sudo apt install make
+
 If you are a Windows user, download either "Cygwin" or "MSYS2" and install "gfortran" and "make":
   + Cygwin
     + Select "gfortran" & "make" and install
