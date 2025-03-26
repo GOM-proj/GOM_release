@@ -63,16 +63,15 @@ This project has the following directory structure (e.g.,):
       + `not yet included`
     + ./Projects/MB_test/
       + `Note: this is the Mobile Bay test case, and this folder contains barotropic and baroclinic test cases`
-      +  1_barotropic_test/
-        + input
+      + 1_barotropic_test/
         + ./input
         + ./output
-      + ./`your executable must be located here`
+        + ./`your executable must be located here`
 
-      +  2_baroclinic_test/
-      + ./input
-      + ./output
-      + ./`your executable must be located here`
+      + 2_baroclinic_test/
+        + ./input
+        + ./output
+        + ./`your executable must be located here`
     + /source
       + /release/makefile
         + `this is the "makefile"`
