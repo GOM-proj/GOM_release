@@ -3,6 +3,10 @@ README by Jungwoo Lee
 
 This is the GOM version update notes.
 !=============================================================================!
+Rv1.1.1 (GOM_Dv88) -----------------------------------------------------------!
+	Error associated with the momentum equation has been fixed.
+	This is more stable and accurate than previous versions.
+	
 Rv1.1.0 (GOM_Dv85) -----------------------------------------------------------!
 	Now, I switched [ob_eta_type]:
 		1: eta		-> harmonic

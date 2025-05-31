@@ -1,0 +1,900 @@
+!=============================================================================!
+!
+! Main input file for the General Ocean Model (GOM)
+!
+! Welcome to the GOM model
+! Developed by Jungwoo Lee & Jun Lee
+! This file is self-documented with definitions and guidance for each
+! input variable contained in its card image section.
+!
+!=============================================================================!
+! C0 ~ C19: General Model Configuration Information									!
+!=============================================================================!
+C00	TITLE FOR RUN
+!
+!		project_name:	[c]	TITLE OR IDENTIFIER FOR THIS INPUT FILE AND RUN. 
+!									(LIMIT TO 200 CHARACTERS LENGTH)
+!
+C00	project_name
+  		Mobile_Bay:_GOM_v84_synchronized
+!=============================================================================!
+C01	Define some global parameters before we start
+!		Generally, users don't need to change these values.
+!		
+!		gravity					[r]	Gravitational acceleration, g [m/s2]
+! 		rho_o						[r]	Reference density of seawater [kg/m3]
+!		rho_a						[r]	Reference density of air [kg/m3] @ 0 degree Celsius
+!		max_no_neighbor_node	[i]	Maximum allowed number of neighbor nodes and elements in your grid
+!											Typically, 10 is o.k. for general grid.
+!
+C01	gravity		rho_o 	rho_a		max_no_neighbor_node
+		9.81			1025.0	1.29		10
+!=============================================================================!
+C1		Read coordinate frame flag and check it
+!
+!		maxnod				[i]	Number of nodes in your grid
+!		maxele				[i]	Number of elements in your grid
+!		h_node_adjust		[r]	Additive adjustment to the node depth provided in "node.inp".
+! 										This is an easy grid depth adjustment option.
+!		ana_depth			[i]	0/1	off/on, overwrite water depth with analytical initial conditions 
+!												If 1, re-define water depth in "ana_depth.f90".
+! 												In this case, water depth defined in node.inp will be replaced with the given analytic information.
+!		coordinate_system	[i]	1	Cartesian or UTM system
+!										2	Longitude/Latitude system. Lon. and lat. should be in [degree]
+!		lon					[r]	Longitude of the model domain [degree]; this will be used for heat transport
+!		lat					[r]	Latitude of the model domain [degree]; this will be used for heat transport & Coriolis calculation
+!		voronoi				[i]	0/1	off/on, use voronoi center of elements, otherwise Centroid of a triangle will be used.
+!		node_mirr:			[i]	0/1	off/on, Write mirror image file (node_mirr.dat)
+!		cell_mirr:			[i]	0/1	off/on, Write mirror image file (cell_mirr.dat)
+!
+C1		maxnod	maxele	h_node_adjust	ana_depth	coordinate_system		lon		lat	voronoi	node_mirr	cell_mirr
+		18718	   35127 	0.0				0				1							-128.0	37.5		0			1				1
+!=============================================================================!
+C2		Read vertical layer information
+!
+!		maxlayer				[i]	Number of vertical layers
+!		MSL					[r]	Mean Sea Level elevation from the bottom (z_level(0)) [m]
+!		z_level(0)			[r]	Reference bottom level elevation below MSL [m]
+!
+C2		maxlayer		MSL		z_level(0)
+!		1				0.0		-100.0
+!		2				0.0		-100.0
+		5				0.0		-100.0
+!		10				0.0		-100.0
+!		20				0.0		-100.0
+!=============================================================================!
+C2_1	[maxlayer] lines are required
+!
+!		serial_num	[i]	Layer number (dummy number)
+!		z_level		[r]	each vertical grid level [m] (each grid's top elevation) from the bottom (i.e., z_level(0))
+!								Provide this in surface-to-bottom order.
+!
+C2_1	serial_num	z_level(i)
+!		1				10.0		! 1 layer
+!		2				10.0		! 2 layers
+!		1				-5.0
+		 5				20.0		! 5 layers
+		 4				-3.0
+		 3				-6.0
+		 2				-9.0
+		 1			  -12.0
+!		10				10.0		! 10 layers
+!		 9				-2.0
+!		 8				-4.0
+!		 7				-7.0
+!		 6			  -10.0
+!		 5			  -14.0
+!		 4				18.0
+!		 3			  -23.0
+!		 2			  -28.0
+!		 1			  -33.0		! starting from -38.0 m, so dz = 5.0
+!=============================================================================!
+C3		Read time-related variables
+!
+!		dt						[r]	Time increment in [sec]
+!		ndt					[i]	Total simulation step 
+!										Total simulation time = dt * ndt [sec]
+! 		data_start_year	[i]	All given input data's start (reference) year (except hurricane_ser.inp)
+!										All data starts at data_start_year/January/1st 00:00:00
+!		data_time_shift	[i]	Data start time shift in [day] from data_start_year/January/1st 00:00:00
+!		start_year			[i]	Simulation start year. Should be 1900 <= start_year <= 2099
+!		start_month			[i]	Simulation start month
+!		start_day			[i]	Simulation start day
+!		start_hour			[i]	Simulation start hour
+!		start_minute		[i]	Simulation start minute
+!		start_second		[i]	Simulation start second
+!
+C3		dt			ndt	data_start_year	data_time_shift	start_year	start_month	start_day	start_hour	start_minute	start_second
+!		 10.0		43200	2010					212 					2010			8				1				0				0					0  				! (4320=0.5 day,8640=1.0 day,43200=5.0 day,86400=10 day,259200=30 day,527040 = 61 day)
+!		 60.0		460	2010					212 					2010			8				1				0				0					0  				! (720=0.5 day, 1440=1.0 day,7200=5.0 day,14400=10 day, 43200 = 30 day, 87840 = 61 day)
+!		 90.0		240	2010					212  					2010			8				1				0				0					0  				! (480=0.5 day, 960=1.0 day, 4800=5.0 day, 9600=10 day, 28800 = 30 day, 58560 = 61 day, 172800 = 180 day)
+		150.0		576 	2010					212 					2010			8				1				0				0					0  				! (288=0.5 day, 576=1.0 day, 2880=5.0 day, 5760=10 day, 17280 = 30 day, 35136 = 61 day)
+!		300.0		1440	2010					212 					2010			8				1				0				0					0  				! (144=0.5 day, 288=1.0 day, 1440=5.0 day, 2880=10 day, 8640 = 30 day, 17568 = 61 day)
+!		600.0		720 	2010					212					2010			8				1				0				0					0  				! (72=0.5 day, 144=1.0 day, 720=5.0 day, 1440=10 day, 4320 = 30 day, 8784 = 61 day)
+!	  1800.0		2928 	2010					212					2010			8				1				0				0					0  				! (24=0.5 day, 48=1.0 day, 240=5.0 day, 480=10 day, 1440 = 30 day, 2928 = 61 day)
+!=============================================================================!
+C4		Restart & screen show control
+!
+!		restart_in:			[i]	0	Cold start: normal case
+!										1	Hot start:  'restart.inp' is required.
+!		restart_out:		[i]	0	Do not write restart file (restart_***.out)
+!									  -1	Write restart file (restart_***.out) once at the end of run
+!										1	Write restart file at every restart_freq
+!		restart_freq: 		[i]	N	Write restart_***.out every restart_freq period (N * dt seconds)	
+!		ishow:				[i]	0	Do not show run-time results on screen
+!										1	Show run-time results on screen (full show)
+!										2	Show only beginning & ending on screen (skip showing run-time results)
+!		ishow_frequency:	[i]	N	Screen show time interval (N * dt seconds)
+!
+C4		restart_in	restart_out	restart_freq	ishow		ishow_frequency
+!		0				0				172800			1			720							! every hr; dt = 5, every 10 day
+!		0				0				86400				1			360							! every hr; dt = 10, every 10 day
+!		0				0				28800				1			120							! every hr; dt = 30, every 10 day
+!		0				0				14400				1			60								! every hr; dt = 60, every 10 day
+!		0				0				28800				1			40								! every hr; dt = 90, every 30 day
+!		0				0				7200				1			30								! every hr; dt = 120, every 10 day
+		0				0				5760				1			24								! every hr; dt = 150, every 10 day
+!		0				0				2880				1			12								! every hr; dt = 300, every 10 day
+!		0				-1				4320				1			6								! every hr; dt = 600, every 30 day
+!		1				0				1440				1			2								! every hr; dt = 1800, every 10 day
+!=============================================================================!
+C5_01	Momentum equation variables I - Propagation/Nonlinear advection
+!		Note: The ELM method is used for the (1) nonlinear advection and (2) Coriolis terms
+!
+!		theta						[r]	Implicitness paramter for the propagation term. 0.5 <= theta <= 1.0
+!		advection_flag			[i]	0/1	off/on, Turn off/on nonlinear advection: absolute criteria
+!		adve_onoff_depth		[r]	[m]	Turn off nonlinear advection below this depth: conditional criteria
+!													This is the additional off/on option for nonlinear advection
+!		ELM_backtrace_flag	[i]	0	Constant ELM subdivisions, [ELM_sub_iter], will be used.
+!											1	The number of subdivisions, [ELM_sub_iter], will be automatically calculated in the code 
+! 												based on the local velocity gradient.
+!											2~ Other integer numbers will make ELM unconditionally stable, but accuracy is not guaranteed.
+!		ELM_sub_iter			[i]		Number of sub iteration for ELM
+!												If ELM_backtrace_flag is off (==0), [ELM_sub_iter] will be used.
+!		ELM_min_iter			[i]		Number of minimum iteration for ELM. When ELM_backtrace_flag == 1
+!		ELM_max_iter			[i]		Number of maximum iteration for ELM. When ELM_backtrace_flag == 1
+!												If ELM_backtrace_flag is on (==1), [ELM_sub_iter] will be calculated in the range:
+!												ELM_min_iter < ELM_sub_iter < ELM_max_iter
+!
+C5_01 theta		advection_flag		adv_onoff_depth	ELM_backtrace_flag	ELM_sub_iter	ELM_min_iter	ELM_max_iter
+		0.6		1						0.01					0 							1					1					100
+!=============================================================================!
+C5_02	Momentum equation variables II - Bottom friction
+!		bf_flag				[i]	Bottom friction on/off option
+!										0 = No bottom fricition
+!										1 = Chezy-Manning equation
+!										2 = Quadratic friction law (log law)
+!		bf_varying			[i]	Spatially varying or constant bottom friction?
+! 										0 = spatially constant bottom friction; the constant 'manning' or 'bf_height' will be used.
+! 										1 = spatially varying bottom friction; bottom_roughness.inp is required.
+!		manning				[r]	Manning's n (for Chezy-Manning equation), 
+! 										This value will be used if bf_flag == 1 & bf_varying == 0
+!		bf_height			[r]	Bottom roughness height, z0 (for log law) in [m], 
+! 										This value will be used if bf_flag == 2 & bf_varying == 0
+!		von_Karman			[r]	von Karman constant (for log law); typical value = 0.41
+!
+C5_02	bf_flag	bf_varying	manning	bf_height	von_Karman
+!		2  		0				0.015   	0.00001			0.41									
+!		1  		0				0.018   	0.00001			0.41									
+		1  		0				0.010   	0.00001			0.41		! this is much better now							
+!		2  		0				0.010   	1.e-7 			0.41		! 
+!=============================================================================!
+C5_03	Momentum equation variables III - Baroclinic gradient/wetting & drying/Coriolis
+!
+!		baroclinic_flag	[i]	0/1	off/on, baroclinic simulation
+!										0		Baroclinic density gradient effect will be ignored.
+!										1		Baroclinic density gradient effect will be included.
+!		ana_density			[i]	0		analytical density is off; the full equation of state will be used.
+! 										1		Use a simple linear equation of state (rho = 1000.0 + 0.7*salinity)
+!										2		Use this option for test (user must specify own equation in calculate_analytical_density.f90).
+! 		ref_salt				[r]	Reference salinity in [psu].
+!										If salinity transport is off (i.e., is_tran(1) == 0), this value will be used for the density calculation.
+! 		ref_temp				[r]	Reference water temperature in [Celcius].
+!										If temperature transport is off (i.e., is_tran(2) == 0), this value will be used for the density calculation.
+!		dry_depth			[r]	[m]	Should be greater than 0.0 [m] (0.01 m is recommended).
+! 												If depth <= dry_depth, it will be a dry element.
+!		Coriolis_option	[i]  	0	No Coriolis
+!										1	Constant Coriolis from given latitude in C1 (f-plane approximation)
+!											f = 2*omega*sin(mid_latitude)
+!										2	Variable Coriolis (by beta-plane approximation); [coordinate_system] in C1 must be 2 (i.e., lon/lat)
+!											f = f0 + beta*y; where f0 = 2*omega*sin(mid_latidue); GOM will calculate f at each face center.
+!
+C5_03	baroclinic_flag	ana_density	ref_salt	ref_temp	dry_depth	Coriolis_option
+		1  					0				30.0		20.0		0.01			1
+!=============================================================================!
+C5_04	Momentum equation variables IV - Horizontal & Vertical diffusion
+!		In the case of momentum diffusion, they are called 'eddy viscosities'.
+!		For scalar fields such as temperature or salinity, the coefficients are called 'eddy diffusivities'. They are on the order of 10^-3 ~ 10^-4
+!
+!		Smagorinsky_parameter	[r]	Smagorinsky parameter in Smagorinsky-Lilly model.
+!												Usually it has the value: 0.0 ~ 0.25. See more details in 'solve_momentum_equation.f90'.
+!												If this is set to 0.0, then the Smagorinsky-Lilly model will be turned off.
+!		Ah_0							[r]	Background horizontal eddy viscosity [m2/s]; for momentum diffusion.
+! 												This value will be added to the Smagorinsky model results.
+!		Kh_0							[r]	Background horizontal eddy diffusivity (Kh); for other diffusion.
+! 												This value will be added to the Smagorinsky model results.
+!												Kh varies from near zero to order 10^4 [m2/s] (Cole et al, 2015); typically 10^2 ~ 10^4 [m2/s]
+!		Av_0							[r]	Background vertical eddy visocity [m2/s]; for momentum diffusion.
+!												typical value = 1.e-2 [m2/sec]
+!		Kv_0							[r]	Background vertical eddy diffusivity [m2/s]; for other diffusion.
+!												typical value = 1.e-4 [m2/sec]
+C5_04	Smagorinsky_parameter	Ah_0	Kh_0	Av_0		Kv_0
+!		0.021							0.00	40.0	1.e-2    1.e-4		! 
+		0.021							0.00	00.0	0.00     1.e-4		! 
+!=============================================================================!
+C6		Matrix solver option for Jacobi Preconditioned Conjugate Gradient (PCG) method:
+!
+!		max_iteration_pcg	[i]		Maximum number of iteration
+!		error_tolerance	[r]		The stopping criterion or approximate relative accuracy desired in the final computed solution.
+! 		pcg_result_show	[i]		0/1	off/on, PCG solver results show
+! 											If it is on, GOM will show the converging iteration number both on the screen and the log file, run.log.	
+C6		max_iteration_pcg		error_tolerance	pcg_result_show
+ 		1000						5.e-6					0
+!=============================================================================!
+C7		off/on tranport equations & selection of the solver
+!
+!		transport_flag		[i]	0/1	off/on, global turn off/on flag for transport equation
+! 												If transport_flag == 0, following variables will be automatically turned off.	
+! 		transport_solver	[i]	1/2	Transport equation solver selection option
+! 										1		TVD scheme
+!										2		Eulerian Lagrangian Method (ELM)
+! 
+C7		transport_flag		transport_solver
+		1  					1
+!=============================================================================!
+C7_1	TVD solver
+!		Activate if transport_flag == 1 & transport_solver == 1 in C7
+!
+! 		trans_sub_iter		[i]	N		Number of sub iteration (sub-cycling) for the TVD transport eqaution
+!										0,1	No sub-iteration
+! 										2~N	Number of sub-iterations
+!		h_flux_limiter		[i]	0~3	Flux limiter functions for horizontal:
+!										0: No flux limiter (i.e., 1st-order upwind), 1: Minmod, 2: van Leer, 3: Superbee
+!		v_flux_limiter		[i]	0~3	Flux limiter functions for vertical:
+!										0: No flux limiter (i.e., 1st-order upwind), 1: Minmod, 2: van Leer, 3: Superbee
+!
+C7_1	trans_sub_iter		h_flux_limiter		v_flux_limiter
+!		0						0						0					
+!		3						0						0
+!		6						3						3
+!		10						1						1
+		30						0						0
+!		120					1						1
+!		150					3						3					
+!=============================================================================!
+C7_2	Turn off/on transport variables
+!		Activate if transport_flag == 1
+! 
+! 		is_tran	[i]	0/1	off/on, transported scalar materials; note, currently GOM has two materials; it will be expanded step by step.
+!									is_tran[1] 	= salinity
+! 									is_tran[2] 	= temperature
+!		num_tran_ser	[i]	Total number of time series for each tranported material
+!									If > 0, should have '***_ser.inp'
+!		tran_ser_shape [i]	There are two shapes of '***_ser.inp' depending on a user's preference
+! 									1 = ***_ser1.inp (useful if each station has different time record)
+! 									2 = ***_ser2.inp (useful if each station has identical time record)
+! 
+C7_2	is_tran	num_tran_ser	tran_ser_shape
+		1			3					1					! salinity; salt_ser.inp
+		1			3					1					! temperature; temp_ser.inp
+!=============================================================================!
+C7_3	Heat transport control variables 1
+!		Activate if transport_flag == 1 & is_tran[2] == 1; i.e., only if temperature transport is activated.
+!
+!		heat_option			[i]	1/2	Short-wave solar radiation computation option
+!												1 = Term-by-Term calculation
+!												2 = Equilibrium temperature (not yet implemented)
+!		sol_swr				[i]	1/2	option to calculate short-wave solar radiation
+!												1 = short-wave solar radiation will be calculated from model domain's lon/lat & time info
+!												2 = short-wave solar radiation will be read in from air_ser.inp
+!		fWz_a					[r]			empirical evaporation coefficient a; default = 9.2
+!		fWz_b					[r]			empirical evaporation coefficient b; default = 0.46
+!		fWz_c					[r]			empirical evaporation coefficient c; default = 2.0
+!		wind_height			[r]			wind speed measurement height [m] in air_ser.inp; typically either 2.0[m] or 10.0[m]
+!
+C7_3	heat_option		sol_swr	fWz_a		fWz_b		fWz_c		wind_height		
+		1					2			9.2		0.46		2.0		2.0
+!=============================================================================!
+C7_4	Heat transport control variables 2 - surface/bottom boundary related coefficients
+!		Activate if transport_flag == 1 & is_tran[2] == 1; i.e., only if temperature transport is activated.
+!
+!		light_extinction 		[r]	light extinction coefficient, Kd, [1/m]; default = 0.45
+!		sol_absorb				[r]	fraction short-wave absorbed on water surface; default = 0.45
+!		sed_water_exchange	[r]	coefficient of sediment/water heat exchange, [W/m2/C]; default = 0.3
+!		T_sed						[r]	sediment temperature [degree C]; typical value = 11.5 C
+!		sed_temp_coeff			[r]	sediment temperature coefficient (0 ~ 1); Heat lost to sediments that is added back to water column
+! 											e.g., 0: 0% of the shortwave solar radiation is reradiated into the water column resulting in a loss of the solar radiation from the system.
+! 
+C7_4	light_extinction	sol_absorb	sed_water_exchange	T_sed		sed_temp_coeff
+		0.45					0.45			0.3						11.5		0.0
+!=============================================================================!
+C8		Model termination control
+!
+!		terminate_check_freq:	[i]	N	Check model termination criteria at every terminate_freq period (N * dt seconds)
+!		eta_min_terminate:		[r]	Model termination criterion by minimum water surface elevation [m]
+! 		eta_max_terminate:		[r]	Model termination criterion by maximum water surface elevation [m]
+!		uv_terminate:				[r]	Model termination criterion by maximum horizontal velocities [m/s]
+!		salt_terminate:			[r]	Model termination criterion by maximum salinity [ppt]
+!		temp_terminate:			[r]	Model termination criterion by maximum water temperature [Celcius]
+!
+C8		terminate_check_freq		eta_min_terminate		eta_max_terminate		uv_terminate	salt_terminate		temp_terminate
+!		8640  						-3.0						3.0						5.0				50.0					50.0							! every day; dt = 10
+!		2880  						-3.0						3.0						5.0				50.0					50.0							! every day; dt = 30
+!		1440  						-3.0						3.0						5.0				50.0					50.0							! every day; dt = 60
+!		960	  						-3.0						3.0						5.0				50.0					50.0							! every day; dt = 90
+!		720  							-3.0						3.0						5.0				50.0					50.0							! every day; dt = 120
+		576  							-3.0						3.0						5.0				50.0					50.0							! every day; dt = 150
+!		288  							-3.0						3.0						5.0				50.0					50.0							! every day; dt = 300
+!		144  							-3.0						3.0						5.0				50.0					50.0							! every day; dt = 600
+!		9999999						-3.0						3.0						5.0				50.0					50.0							! skip checking; dt = anything
+!=============================================================================!
+! The end of the first set.															!
+! C20 ~ C29, Tidal & River Boundary Conditions											!
+!=============================================================================!
+C20 	Open boundary (tidal eta or tidal flow) information
+!
+!		num_ob_cell:		[i]	Total number of open boundary cells (elements) - for eta only
+!										[num_ob_cell] = [num_tide_bc] + [num_eta_bc]
+!										If > 0, either activate C20_1 or provide open boundary information in ob_info.inp
+!										If == 0, following variables will be ignored.
+! 		ob_info_option:	[i]	How do you want to provide the open boundary (eta) information?
+! 										0	In the following sub-card; following sub-card must activated
+!										1	Provide the open boundary (eta) information in the additional ob_info.inp; 
+!											if this is selected, do not activate the following sub-card.
+!		num_tide_bc:		[i]	Number of tidal boundary (periodic forcing using tidal constitutents)
+!		num_harmonic_ser:	[i]	Total number of harmonic series
+!										If > 0, should have 'harmonic_ser.inp'
+!		check_tide:			[i]	1 = Write harmonic tide checking file: check_tide.dat
+!											 Harmonic tide at each station: every 1 hour.
+! 											 Not yet activated
+!		num_eta_bc:			[i]	Number of surface elevation boundary (eta given, general purpose)
+!		num_eta_ser:		[i]	Total number of eta time series
+!										If > 0, should have 'eta_ser.inp'
+!		check_eta:			[i]	1 = Write eta series checking file: check_eta.dat 
+!											 Interpolation result: default = every 30 minutes.
+! 											 Not yet activated
+!		eta_ser_shape:		[i]	There are two shapes of 'eta_ser.inp' depending on a user's preference
+! 										1 = eta_ser1.inp (useful if each station has different time record)
+! 										2 = eta_ser2.inp (useful if each station has identical time record)
+C20
+C20	num_ob_cell			ob_info_option	
+C20	num_tide_bc			num_harmonic_ser		check_tide	
+C20	num_eta_bc			num_eta_ser				check_eta		eta_ser_shape	
+		75 					0					
+		0						0							0				
+		75  					2  						0					2						! eta_ser1.inp is also provided for the reference
+!=============================================================================!
+C20_1	Eta boundary information
+!		Activate if num_ob_cell > 0 .and. ob_info_option == 0.
+!		Should have 'num_ob_cell' information (lines).
+!
+!		serial_num			[i]	Station number (dummy number)
+!		ob_nodes(i,1)		[i]	First node of the station (or the element, in counterclockwise direction)
+!		ob_nodes(i,2)		[i]	Second node of the station (or the element, in counterclockwise direction)
+!		ob_eta_type			[i]	Open boundary surface elevation type:
+!									  -1	Radiation bc
+!											No input is required; elevations will be computed as average of surrounding elevations.
+!										1	This boundary is forced by time history of elevation. eta_ser.inp is required
+!										2	This boundary is forced by tidal harmonic constituents; harmonic_ser.inp is required; default = cosine function
+!		harmonic_ser_id	[i]	ID number of harmonic series at this station. 
+!											If ob_eta_type == 2 or 3, it will be activated.
+!											It should be greater than 0.
+! 		eta_ser_id			[i]	ID number of surface elevation time series at this station.
+! 		salt_ser_id			[i]	ID number of salinity time series at this station.
+! 		temp_ser_id			[i]	ID number of temperature time series at this station.
+!		ob_name				[c]	dummy variable. This will not be read.
+! 
+C20_1	serial_num	ob_nodes(i,1)	ob_nodes(i,2)	ob_eta_type(i)	harmonic_ser_id(:)	eta_ser_id(:)	salt_ser_id 	temp_ser_id		ob_name
+      1           18718         18716  			1					0	   					1					1					1	   			! Pass aux Herons (Pascacoula)
+      2           18716         18713  			1					0	   					1					1					1	   			
+      3           18713         18709  			1					0	   					1					1					1	   			
+      4           18709         18703  			1					0	   					1					1					1	   			
+      5           18703         18695  			1					0	   					1					1					1	   			
+      6           18695         18686  			1					0	   					1					1					1	   			
+      7           18686         18674  			1					0	   					1					1					1	   			
+      8           18674         18660  			1					0	   					1					1					1	   			
+      9           18660         18644  			1					0	   					1					1					1	   			
+     10           18644         18626  			1					0	   					1					1					1	   			
+     11           18626         18605  			1					0	   					1					1					1	   			
+     12           18605         18581  			1					0	   					1					1					1	   			
+     13           18581         18553  			1					0	   					1					1					1	   			
+     14           18553         18522  			1					0	   					1					1					1	   			
+     15           18522         18492  			1					0	   					1					1					1	   			
+     16           18492         18457  			1					0	   					1					1					1	   			
+     17           18457         18422  			1					0	   					1					1					1	   			
+     18           18422         18385  			1					0	   					1					1					1	   			
+     19           18385         18346  			1					0	   					1					1					1	   			
+     20           16941         16940  			1					0	   					2 					2					2	   			! Main Pass
+     21           16940         16939  			1					0	   					2 					2					2	   			
+     22           16939         17037  			1					0	   					2					2					2	   			
+     23           17037         17036  			1					0	   					2					2					2	   			
+     24           17036         17035  			1					0	   					2					2					2	   			
+     25           17035         17034  			1					0	   					2					2					2	   			
+     26           17034         17033  			1					0	   					2					2					2	   			
+     27           17033         17032  			1					0	   					2					2					2	   			
+     28           17032         17031  			1					0	   					2					2					2	   			
+     29           17031         17030  			1					0	   					2					2					2	   			
+     30           17030         16960  			1					0	   					2					2					2	   			
+     31           16960         16874  			1					0	   					2					2					2	   			
+     32           16874         16773  			1					0	   					2					2					2	   			
+     33           16773         16670  			1					0	   					2					2					2	   			
+     34           16670         16564  			1					0	   					2					2					2	   			
+     35           16564         16455  			1					0	   					2					2					2	   			
+     36           16455         16345  			1					0	   					2					2					2	   			
+     37           16345         16237  			1					0	   					2					2					2	   			
+     38           16237         16132  			1					0	   					2					2					2	   			
+     39           16132         16030  			1					0	   					2					2					2	   			
+     40           16030         15926  			1					0	   					2					2					2	   			
+     41           15926         15831  			1					0	   					2					2					2	   			
+     42           15831         15733  			1					0	   					2					2					2	   			
+     43           15733         15640  			1					0	   					2					2					2	   			
+     44           15640         15550  			1					0	   					2					2					2	   			
+     45           15550         15458  			1					0	   					2					2					2	   			
+     46           15458         15361  			1					0	   					2					2					2	   			
+     47           15361         15262  			1					0	   					2					2					2	   			
+     48           15262         15165  			1					0	   					2					2					2	   			
+     49           15165         15063  			1					0	   					2					2					2	   			
+     50           15063         14963  			1					0	   					2					2					2	   			
+     51           14963         14860  			1					0	   					2					2					2	   			
+     52           14860         14754  			1					0	   					2					2					2	   			
+     53           14754         14650  			1					0	   					2					2					2	   			
+     54           14650         14548  			1					0	   					2					2					2	   			
+     55           14548         14449  			1					0	   					2					2					2	   			
+     56           14449         14349  			1					0	   					2					2					2	   			
+     57           14349         14253  			1					0	   					2					2					2	   			
+     58           14253         14155  			1					0	   					2					2					2	   			
+     59           14155         14056  			1					0	   					2					2					2	   			
+     60           14056         13950  			1					0	   					2					2					2	   			
+     61           13950         13845  			1					0	   					2					2					2	   			
+     62           13845         13733  			1					0	   					2					2					2	   			
+     63           13733         13620  			1					0	   					2					2					2	   			
+     64           13620         13506  			1					0	   					2					2					2	   			
+     65           13506         13388  			1					0	   					2					2					2	   			
+     66           13388         13273  			1					0	   					2					2					2	   			
+     67           13273         13155  			1					0	   					2					2					2	   			
+     68           13155         13041  			1					0	   					2					2					2	   			
+     69           13041         12923  			1					0	   					2					2					2	   			
+     70           12923         12801  			1					0	   					2					2					2	   			
+     71           12801         12671  			1					0	   					2					2					2	   			
+     72           12671         12542  			1					0	   					2					2					2	   			
+     73           12542         12402  			1					0	   					2					2					2	   			
+     74           12402         12255  			1					0	   					2					2					2	   			
+     75           12255         12102  			1					0	   					2					2					2	   			
+!=============================================================================!
+C21 	Setup spinup function for tide
+!
+!		tide_spinup						[i]	0/1	off/on, spinup for tide
+!		tide_spinup_period			[r]	[day]
+!		baroclinic_spinup				[i]	0/1	off/on, spinup for baroclinic
+!		baroclinic_spinup_period	[r]	[day]
+!
+C21	tide_spinup				tide_spinup_period
+C21	baroclinic_spinup		baroclinic_spinup_period
+		0							0.5							! tide_spinup
+		0							0.5							! baroclinic_spinup
+!=============================================================================!
+C22	Include river boundary
+!
+!		num_Qb_cell:		[i]	Number of river or point source boundaries (Not node number but cell number) (Q given)
+!										If > 0, should activate the following sub-card & need 'q_ser.inp'
+! 		Qbc_info_option:	[i]	How do you want to provide the river boundary information?
+! 										0	In the following sub-card; following sub-card must activated
+!										1	Provide the river boundary information in the additional Qbc_info.inp; 
+!											if this is selected, do not activate the following sub-card.
+!		num_Q_ser:			[i]	Total number of Q time series
+!		check_Q:				[i]	1 = Write Q series checking file: check_Q.dat
+!									 	Interpolation result: default = every 30 minutes.
+!		Q_ser_shape:		[i]	There are two shapes of 'q_ser.inp' depending on a user's preference
+! 										1 = q_ser1.inp (useful if each station has different time record)
+! 										2 = q_ser2.inp (useful if each station has identical time record)
+!
+C22	num_Qb_cell	Qbc_info_option	num_Q_ser		check_Q		Q_ser_shape
+		1				0						1					0				1
+!=============================================================================!
+C22_1	River or point source boundary (Q given) information
+!		Activate if num_Q_bc > 0. num_Q_bc lines are required.
+!
+! 		serial_num:		[i]	Station number (dummy number)
+!		Q_nodes(i,1): 	[i]	First node of the station (or the element, in counterclockwise direction)
+!		Q_nodes(i,2):	[i]	Second node of the station (or the element, in counterclockwise direction)
+!		Q_ser_id:		[i]	ID number of river (Q) time series
+!		Q_portion:		[r]	Portion of Q for Q_ser_id
+!		Q_salt_ser_id	[i]	ID number of salinity time series at this station.
+!		Q_temp_ser_id	[i]	ID number of temperature time series at this station.
+!		Q_name:			[c]	River or point source ID name (dummy variable)
+!
+C22_1	serial_num 	Q_nodes(i,1)	Q_nodes(i,2)	Q_ser_id(:)		Q_portion	Q_salt_ser_id	Q_temp_ser_id	!Q_name
+		1				151				141				1					1.0			3  				3					! Mobile River (cell# = 145) 
+!=============================================================================!
+C23	Include Withdraw/Return (WR) point boundary
+!		This option differs from river boundary; this option does not work with ELM transport
+!
+!		num_WR_cell:		[i]	Number of Withdraw/Return point source boundaries (Not node number but cell number) (Q given)
+!										If > 0, should activate the following sub-card
+!
+C23	num_WR_cell
+		0
+!=============================================================================!
+C23_1	Withdraw/Return (WR) point boundary information
+!		Activate if num_WR_cell > 0. num_WR_cell lines are required.
+!
+! 		serial_num		[i]	Station number (dummy number)
+!		WR_nodes(i,1) 	[i]	First node of the station (or the element, in counterclockwise direction)
+!		WR_nodes(i,2)	[i]	Second node of the station (or the element, in counterclockwise direction)
+!		WR_layer:		[i]	Withdraw/Return vertical layer
+! 									This is the main difference between river boundary and Withdraw/Return bounddary
+!									999 	= anytime surface layer
+! 									1 ~ N	= specific vertical layer
+! 									0		= anytime bottom layer
+!		WR_Q_ser_id		[i]	ID number of Withdra/Return (Q) time series in q_ser.inp
+!		WR_portion		[r]	Portion of Q for WR_Q_ser_id
+!		WR_salt_ser_id	[i]	ID number of salinity time series at this station.
+!		WR_temp_ser_id	[i]	ID number of temperature time series at this station.
+!		WR_name:			[c]	Withdraw/Return point source ID name (dummy variable)
+!
+C23_1	serial_num 	WR_nodes(i,1)	WR_nodes(i,2)	WR_layer	WR_Q_ser_id	WR_portion	WR_salt_ser_id	WR_temp_ser_id	! WR_name
+!		1				2121				2123 				999  		3				50.00		   4  				4					! test at Coyote
+!=============================================================================!
+C24	Include Source/Sink (SS) point boundary
+!		This option differs from river boundary & withdraw/return boundary;  this option does not work with ELM transport
+!
+!		num_SS_cell:		[i]	Number of Source/Sink point source boundaries (Not node number but cell number)
+!										If > 0, should activate the following sub-card
+C24	num_SS_cell
+		0
+!=============================================================================!
+C24_1	Source/Sink (SS) point boundary information
+!		Activate if num_SS_cell > 0. num_SS_cell lines are required.
+!
+! 		serial_num		[i]	Station number (dummy number)
+!		SS_cell 			[i]	Cell (or element) nuumber of the station
+!		SS_layer			[i]	Source/Sink vertical layer
+!									999 	= anytime surface layer
+! 									1 ~ N	= specific vertical layer
+! 									0		= anytime bottom layer
+!		SS_Q_ser_id		[i]	ID number of Source/Sink (Q) time series
+!		SS_portion		[r]	Portion of Q for SS_Q_ser_id
+!		SS_salt_ser_id	[i]	ID number of salinity time series at this station.
+!		SS_temp_ser_id	[i]	ID number of temperature time series at this station.
+!		SS_name:			[c]	Source/Sink point source ID name (dummy variable)
+!
+C24_1	serial_num 	SS_cell	SS_layer	SS_Q_ser_id		SS_portion	SS_salt_ser_id	SS_temp_ser_id	! SS_name
+!		1				3662		999		3					10.00		   4  				4					! test at Coyote
+!=============================================================================!
+C25	Include earth equilibrium tidal potential (or Solid Earth Tide)
+!
+!		no_Etide_species		[i]	Number of Earth equilibrium tidal potential species
+!											[no_Etide_species] should be less than [max_no_tidal_constituent]
+!															
+!		Etide_cutoff_depth	[r]	[m], if the water depth is less than this, earth tide will not be added.
+!											See more details in [solve_momentum_equation.f90]
+!
+C25	no_Etide_species	Etide_cutoff_depth
+		0						40.0
+!=============================================================================!
+C25_1	Activate if [no_Etide_species] > 0
+!		[no_Etide_species] lines are required
+!
+!		Etide_species				[i]	1,2,3,...
+!		Etide_amplitude			[r]	[m]
+!		Etide_frequency			[r]	[0,1,2,...,n times]/day, or cycle per day (cpd)
+!		Etide_nodal_factor		[r]	see more details in any reference
+!		Etide_astro_arg_degree	[r]	[degree]
+!
+C25_1	Etide_species(i)	Etide_amplitude(i)	Etide_frequency(i)	Etide_nodal_factor(i)	Etide_astro_arg_degree(i)
+!		0						0							0							0								0
+!=============================================================================!
+! C25_1 is the end of the second set.														!
+! C30 ~ C39, Air/Sea Boundary Conditions													!
+!=============================================================================!
+C30	Wind & pressure data type #1: using simple measured data from wind station
+!		General wind information from wind stations (not storm type winds)
+!
+!		wind_flag				[i]	0	There is no wind station data.
+!											1	Wind information in windp_ser.inp will be used.
+!											2	Analytical wind stress will be used in [ana_windp.f90].
+!		airp_flag				[i]	0	There is no air pressure station data. 
+!											1	Air pressure information in windp_ser.inp will be used. 
+!		num_windp_ser			[i]	Total number of wind and pressure series (stations) in windp_ser.inp
+!											If one of wind_flag or pressure_flag == 1, this variable will be activated.
+! 											Currently, maximum 3 windp stations are allowed. 
+! 											If more than 3 stations, consider to use wind model data as in C32.
+!		wind_formular			[i]	Select one of the following wind stress formulations: 
+! 											Default formular: Smith's (1980) equation (when you choose other than 1 ~ 3)
+!											1 = Garratt's (1977) formula: This method is also used in CH3D.
+!											2 = Smith's (1980) formula: This method is the default in GOM.
+!											3 = Wu's (1982) formula: This method is also used in SWAN.
+!		wind_spinup				[i]	0/1	off/on,	Spinup for wind
+!		wind_spinup_period	[r]	Wind spinup period in [day]	
+!
+C30	wind_flag		airp_flag	num_windp_ser 	wind_formular	wind_spinup		wind_spinup_period
+		0  				0				0					2					0					0.0
+!=============================================================================!
+C31	Wind & pressure data type #2: using measured hurricane data or wind model data
+!		Use hurricane data which includes wind and pressure
+!		Data from National Hurricane Center (NOAA/NHC) or Hurricane Research Division (NOAA/HRD)
+!
+!		hurricane_flag				[i]	0	Wind and pressure (Hurricane type) will not be calculated, 
+!													Following varialbes will not be activated.
+!												1	Wind and pressure will be calculated, hurricane (wind and pressure) data file hurricane_ser.inp should exist.
+!													Following variables will be activated.
+!		hurricane_data_type		[i]	1	Wind and pressure data should be ascii format
+!												2	wind and pressure data should be binary format
+!		hurricane_interp_method	[i]	1	time-only interpolate; use this when you only have wind model data
+!												2	time & space interpolate: Inverse Distance Weighting (IDW) Interpolation
+!													Hurricane center data file, hurricane_center.inp, should exist
+!		hurricane_dt				[i]		Hurricane data interval in [sec]
+!													Number of hurricane data set in hurricane_ser.inp should be greater than:
+!														[hurricane_end_jday - hurricane_start_jday]*(86400/hurricane_dt) + 1
+!										188 ~ 193 julian day
+C31                 
+C31	hurricane_flag				hurricane_data_type		hurricane_interp_method		hurricane_dt
+		1								1								1  					   		21600			! 6 hourly data		
+!		0								1								1  					   		21600			! 6 hourly data		
+!=============================================================================!
+C31_1	Hurricane start/end-year/month/day
+!		Activate if hurricane_flag == 1
+!
+!		hurricane_start_year		[i]	Hurricane (or wind model data) start year
+!		hurricane_start_month	[i]	Hurricane (or wind model data) start month
+!		hurricane_start_day		[i]	Hurricane (or wind model data) start day
+!		hurricane_end_year		[i]	Hurricane (or wind model data) end year
+!		hurricane_end_month		[i]	Hurricane (or wind model data) end month
+!		hurricane_end_day			[i]	Hurricane (or wind model data) end day
+!		
+C31_1	hurricane_start_year		hurricane_start_month	hurricane_start_day
+C31_1	hurricane_end_year		hurricane_end_month		hurricane_end_day
+		2010							8								1
+		2010							9								30
+!=============================================================================!
+C32	Wind & pressure data type #3: using analytical hurricane data
+!		(not yet finished)
+!		Later, I will also include Willoughby et al. (2006)'s model
+!		Use Holland storm surge model
+!
+!		holland_flag			[i]	0/1	off/on, Following variables will (or not) be activated.
+!		holland_start_jday	[r]
+!		holland_end_jday		[r]
+!
+C32	holland_flag		holland_start_jday	holland_end_jday
+		0						0.0						0.0
+!=============================================================================!
+! C32 is the end of the third set.															!
+! C40 ~ C49: Output Control Options															!
+!=============================================================================!
+C40	Check grid
+!
+!		check_grid_2D			[i]	0/1	off/on, write a 2D grid checking file - origin shifted version (for the nice view)
+!		check_grid_2DO			[i]	0/1	off/on, write a 2D grid checking file - original version
+!		check_grid_3D			[i]	0/1	off/on, write a 3D grid checking file
+!		check_grid_format		[i]	1/2/3	Tecplot/VTK/both file format
+!		check_grid_info		[i]	0/1	off/on, write additional grid information - not yet activated
+!		check_grid_unit_conv	[r]	unit conversion factor for the coordinate
+!											1.0   =  [m], original unit in the grid information
+!											0.001 = [km], change the unit to kilometer
+!
+C40	check_grid_2D		check_grid_2DO		check_grid_3D		check_grid_format	check_grid_info	check_grid_unit_conv
+		1						1						1						1						0						0.001
+!=============================================================================!
+C41
+!		tser_station_num		[i]	Total station for time series output files
+! 		tser_info_option		[i]	How do you want to provide the time series station information?
+! 											0	In the following sub-card; following sub-card must activated
+!											1	Provide the time series station information in the additional tser_station_info.inp; 
+!												if this is selected, do not activate the following sub-card.
+! 		tser_hloc				[i]	Time series output horizontal location
+!											1 = cell center
+!											2 = node
+!		tser_frequency			[i]	Time series output file (***_tser.dat) frequency
+!		tser_time				[i]	output file time unit
+!											1 = second, 2 = minute, 3 = hour, 4 = day
+!		tser_format				[i]	1/2/3	Tecplot/VTK/both file format
+!
+C41	tser_station_num	tser_info_option	tser_hloc	tser_time	tser_frequency	tser_format
+!		5					   0						1				4				60					1					! every hr; dt = 60s
+!		5					   0						1				4				40					1					! every hr; dt = 90s
+	   5					   0						1				4				24					1					! every hr; dt = 150s
+!		5					   0						1				4				12					1					! every hr; dt = 300s
+!		5					   0  					1				4				6					1					! every hr; dt = 600s
+!		5					   0  					1				4				2					1					! every hr; dt = 1800s
+!=============================================================================!
+C41_1	Read individual time series station element number
+!		Activate if tser_station_num > 0
+!
+!		serial_num			[i]	Station number (dummy number)
+!		tser_station_cell	[i]	Station element number: will be used only if [tser_loc == 1]
+!		tser_station_node	[i]	Station node number: will be used only if [tser_loc == 2]
+!		tser_station_name	[c]	Station name. Maximum 25 characters.
+!
+C41_1	serial_num	tser_station_cell	tser_station_node		tser_station_name
+ 	  	1			   772					999						'MSD'
+ 	  	2			   22197					999						'DPI'
+ 	  	3			   14200					999						'MBL'
+ 	  	4			   6975					999						'BOS'
+ 	  	5			   1949					999						'MEP'
+!=============================================================================!
+C41_2	Activate/deactivate time series variables
+!		Activate if tser_station_num > 0
+!
+!		tser_eta				[i]	0/1	off/on, write water surface elevation time series: eta_tser_from_msl.xxx, 
+!		tser_H				[i]	0/1	off/on, write total water depth: H_tser.xxx
+!		tser_u				[i]	0/1	off/on, write vertically averaged velocity time series: u_tser.xxx
+!		tser_v				[i]	0/1	off/on, write vertically averaged velocity time series: v_tser.xxx
+!		tser_salt			[i]	0/1	off/on, write vertically averaged salinity time series: salt_tser.xxx
+!		tser_temp			[i]	0/1	off/on, write vertically averaged temperature time series: temp_tser.xxx, not yet included
+!		tser_pressure		[i]	0/1	off/on, write air pressure time series at surface: airp_tser.xxx, not yet included
+!
+C41_2	tser_eta	tser_H	tser_u	tser_v	tser_salt	tser_temp	tser_pressure
+		1			0			1			1			1  			1				0
+!=============================================================================!
+C42	2D output file (tec2D_###.dat or vtk2D_###.dat) control 
+!
+!		IS2D_switch:	[i]	0/1	off/on option
+!		IS2D_flood_map	[i]	0/1	off/on 2D maximum flood map; write one time at the end of simulation.
+!									Works only when IS2D_switch is on
+!		IS2D_format:	[i]	1/2/3	Tecplot/VTK/both file format
+!		IS2D_binary:	[i]	0/1	Select file output format: ASCII or Binary
+!									0 = ASCII
+!									1 = Binary	! not yet activated
+!		IS2D_File_freq:[i]	2D out file generation frequency: 
+!									A new file generation every [dt * IS2D_File_freq] times
+!									This option only works with Tecplot files
+!		IS2D_time:		[i] 	output file time unit
+!									1 = second, 2 = minute, 3 = hour, 4 = day
+!		IS2D_frequency:[i]	2D contour plot frequency: display time = dt*IS2D_frequency [sec]
+! 									Note: IS2D_File_frequency does not affect on VTK files.
+!		IS2D_start:		[i]	2D data start time (simulation step)
+!		IS2D_end:		[i]	2D data end time (simulation step)
+!		IS2D_unit_conv:[r]	unit conversion factor for the coordinate
+!									1.0    = [m],  original unit in the grid information
+!									0.001 = [km], change the unit to kilometer
+!
+C42	IS2D_switch		IS2D_flood_map
+C42	IS2D_format		IS2D_binary		IS2D_File_freq
+C42	IS2D_time		IS2D_frequency	IS2D_start		IS2D_end		IS2D_unit_conv	
+!		1					0																			! dt = 60
+!		1					0					14400													! every 10 day simulation
+!		4  				60  				0  				999999		0.001				! every 1 hr, from 55day
+!		1					0																			! dt = 90
+!		1					0					9600													! every 10 day simulation
+!		4  				40  				0	   			999999		0.001				! every 1 hr; from 55day
+		1					0																			! dt = 150
+		1					0					5760													! every 10 day simulation
+		4  				24  				0  				999999		0.001				! every 1 hr; from 55day (=31680)
+!		1					0																			! dt = 300
+!		1					0					2880													! every 10 day simulation
+!		4  				12  				1					999999		0.001				! every 1 hr
+!		1					0																			! dt = 600
+!		1					0					1440													! every 10 day simulation
+!		4  				6  				1					999999		0.001				! every 1 hr
+!-----------------------------------------------------------------------------!
+C42_1	2D output file (tec2D_###.dat or vtk2D_###.dat) variable selection
+!		It will be used only if (IS2D_switch == 1), so do no deactivate this card.
+!		Note: vertically averaged values will be printed out. 
+!
+!		variable:		[i]	dummy variable id (do not change order)
+!		IS2D_variable:	[i]	0/1	off/on option for each variable
+!
+C42_1	variable		IS2D_variable(:)
+		eta			1
+		u				1
+		v				1
+		salt			1
+		temp			1
+		rho			0
+!=============================================================================!
+C43	3D output file (tec3D_###.out or vtk3D_###.dat) control
+! 		Currently, only for the surface elevation (eta)
+!
+!		IS3D_full_switch:	[i]	0/1	off/on option for 'tec3D_full_***.dat' or 'vtk3D_full_***.dat'
+! 		IS3D_grid_format:	[i]	1/2	3D grid view style; this will be used only if tecplot file format is selected.
+! 										1 = sigma-grid view; this is faster and lighter, but this will show modified view.
+! 										2 = z-grid view; this is slower and heavier, but this will show exact view.
+!		IS3D_surf_switch:	[i]	0/1	off/on option for 'tec3D_surf_***.dat' or 'vtk3D_surf_***.dat'
+!		IS3D_format:		[i]	1/2/3	Tecplot/VTK/both file format
+!		IS3D_binary:		[i]	0/1	Select file output format: ASCII or Binary
+!										0 = ASCII
+!										1 = Binary	! not yet activated
+!		IS3D_File_freq:	[i]	3D out file generation frequency
+!										A new file generation every [dt * IS2D_File_freq] times
+!		IS3D_time:			[i]	output file time unit
+!										1 = second, 2 = minute, 3 = hour, 4 = day
+!		IS3D_frequency:	[i]	3D contour plot frequency: display time = dt*IS3D_frequency [sec]
+!										Note: IS3D_File_freq does not affect on VTK files.
+!		IS3D_start:			[i]	3D data start time (simulation step)
+!		IS3D_end:			[i]	3D data end time (simulation step)
+!		IS3D_unit_conv:	[r]	unit conversion factor for the coordinate
+!										1.0    = [m],  original unit in the grid information
+!										0.001 = [km], change the unit to kilometer
+!
+C43	IS3D_full_switch	IS3D_grid_format	IS3D_surf_switch	
+C43	IS3D_format			IS3D_binary			IS3D_File_freq
+C43	IS3D_time			IS3D_frequency		IS3D_start		IS3D_end			IS3D_unit_conv
+!		0						1						0												! dt = 60
+!		1						0						14400											! every 10 day simulation
+!		4						60						0					999999			0.001	! every 1 hr
+!		0						1						0												! dt = 90
+!		1						0						9600											! every 10 day simulation
+!		4						40						52800				999999			0.001	! every 1 hr; from 55day
+		0						1						0												! dt = 150
+		1						0						5760											! every 10 day simulation
+		4						24						0  				999999			0.001	! every 1 hr; from 55day
+!		0						1						0												! dt = 300
+!		1						0						2880											! every 10 day simulation
+!		4						12						0					999999			0.001	! every 1 hr
+!		0						1						0												! dt = 600
+!		1						0						144											! every 1 day simulation
+!		4						6						0  				999999			0.001	! every 1 hr; from 50day
+!-----------------------------------------------------------------------------!
+C43_1	3D output file (tec3D_###.dat or vtk3D_###.dat) variable selection
+!		It will be used only if (IS3D_full_switch == 1 or IS3D_surf_switch == 1), so do not deactivate this card.
+!
+!		variable:		[i]	dummy variable id (do not change order)
+!		IS3D_variable:	[i]	0/1	off/on option for each variable
+!
+C43_1	variable		IS3D_variable(:)
+		u				1
+		v				1
+		w				1
+		salt			1
+		temp			1
+		rho			0
+!=============================================================================!		
+C44	2D Dump file: dump2D_****.dat
+!		Vertically averaged values of [eta, u, v, salt, temp, rho] at nodes will be written
+!
+!		IS2D_dump_switch:		[i]	0/1	off/on option for 'dump2D_****.dat'
+!		IS2D_dump_binary: 	[i]	Select file output format: ASCII or Binary
+!											0 = ASCII
+!											1 = Binary
+!		IS2D_dump_time:		[i] 	output file time unit
+!											1 = second, 2 = minute, 3 = hour, 4 = day
+!		IS2D_dump_File_freq:	[i]	2D dump file generation frequency
+!											A new file generation every [dt * IS2D_dump_File_freq] times
+!		IS2D_dump_frequency:	[i]	Output dump frequency: printout time = dt*IS2D_dump_frequency [sec]
+!		IS2D_dump_start:		[i]	2D dump start time (simulatioin step)
+!		IS2D_dump_end:			[i]	2D dump end time (simulation step)
+!
+C44	IS2D_dump_switch			IS2D_dump_binary		IS2D_dump_time		IS2D_dump_File_freq
+C44	IS2D_dump_frequency		IS2D_dump_start		IS2D_dump_end
+		0								0							4						144		! generate a file every day
+		6								1							999999							! dump every hr
+!=============================================================================!
+C45	3D Dump file: dump3D_****.dat
+!		eta: 					at node & surface only, 
+!		u, v, w: 			at node & at vertical level [z0 ~ zn] 
+! 		salt, temp, rho: 	at node & at vertical layer [z1 ~ zn]; mid-position
+!
+!		IS3D_dump_switch:		[i]	0/1	off/on option for 'dump3D_****.dat'
+!		IS3D_dump_binary: 	[i]	Select file output format: ASCII or Binary
+!											0 = ASCII
+!											1 = Binary
+!		IS3D_dump_time:		[i] 	output file time unit
+!											1 = second, 2 = minute, 3 = hour, 4 = day
+!		IS3D_dump_File_freq:	[i]	3D dump file generation frequency
+!											A new file generation every [dt * IS3D_dump_File_freq] times
+!		IS3D_dump_frequency:	[i]	Output dump frequency: printout time = dt*IS3D_dump_frequency [sec]
+!		IS3D_dump_start:		[i]	3D dump start time (simulatioin step)
+!		IS3D_dump_end:			[i]	3D dump end time (simulation step)
+!
+C45	IS3D_dump_switch			IS3D_dump_binary		IS3D_dump_time		IS3D_dump_File_freq
+C45	IS3D_dump_frequency		IS3D_dump_start		IS3D_dump_end
+		0								1							4						14400		! generate a file every 10day
+		120							1  						999999							! dump every hr
+!=============================================================================!
+C46	Write diagonostic files for important subroutines
+!
+!		dia_advection:			[i]	0/1	off/on for 'solve_nonlinear_advection.f90'
+!		dia_momentum:			[i]	0/1	off/on for 'solve_momentum_equation.f90'
+! 		dia_freesurface		[i]	0/1	off/on for 'solve_freesurface_equation.f90'
+!		dia_eta_at_ob			[i]	0/1	off/on in  'solve_freesurface_equation.f90'
+!		dia_bottom_friction	[i]	0/1	off/on for 'calculate_bottom_friction.f90'
+! 		dia_face_velocity		[i]	0/1	off/on in  'calculate_horizontal_velocities.f90 & calculate_vertical_velocities.f90'
+!		dia_node_velocity		[i]	0/1	off/on in  'calculate_velocity_at_node.f90'
+!
+C46	dia_advection			dia_momentum		dia_freesurface		dia_eta_at_ob
+C46	dia_bottom_friction	dia_face_velocity dia_node_velocity
+		0							0						0							0
+		0							0						0
+!=============================================================================!
+! End of file ================================================================!

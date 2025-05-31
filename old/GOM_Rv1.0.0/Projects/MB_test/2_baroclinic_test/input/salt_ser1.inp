@@ -1,0 +1,22 @@
+!C salt_ser.inp: 
+!C
+!C		salt_ser_id_dummy:	[i]	ID number of salinity [psu] time series. Dummy variable
+!C		salt_data_num:			[i]	Total number data points in each series
+!C		salt_time_unit_conv:	[r]	Time unit conversion factor to [sec]
+!C		salt_time_adjust		[r]	Additive adjustment to time values 
+!C		salt_unit_conv:		[r]	Salinity unit conversion factor to [kg/m3]
+!C		salt_adjust:			[r]	Additive adjustment to salinity values
+!C		salt_ser_time:			[r]	Time. This number should start from 0 for correct interpolation.
+!C		salt_ser_salt:			[r]	Salinity
+!C
+!C salt_ser_id_dummy		salt_ser_data_num		salt_time_conv		salt_time_adjust	salt_unit_conv 	salt_adjust
+!C		salt_ser_time	salt_ser_salt
+    1                   2             			86400.0          	0.0					1.0					0.0 		! Pass aux Herons side (east boundary)
+       0.0        32.2	! 28.9+3.3
+  999999.0       	32.2
+    2                   2             			86400.0          	0.0					1.0					0.0		! Main Pass side (south boundary)
+       0.0       	35.3	! 33.4+1.9
+  999999.0       	35.3
+    3                   2             			86400.0          	0.0					1.0					0.0		! River boundary
+       0.0       	35.3  ! 0.0
+  999999.0       	35.3  ! 0.0

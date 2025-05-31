@@ -1,0 +1,24 @@
+!C temp_ser.inp: 
+!C
+!C		temp_ser_id_dummy:	[i]	ID number of temperature [C] time series. Dummy variable
+!C		temp_data_num:			[i]	Total number data points in each series
+!C		temp_time_unit_conv:	[r]	Time unit conversion factor to [sec]
+!C		temp_time_adjust		[r]	Additive adjustment to time values 
+!C		temp_unit_conv:		[r]	Temperature unit conversion factor to [C]
+!C		temp_adjust:			[r]	Additive adjustment to temperature values
+!C		temp_ser_time:			[r]	Time. This number should start from 0 for correct interpolation.
+!C		temp_ser_temp:			[r]	Temperature
+!C
+!C temp_ser_id_dummy		temp_ser_data_num		temp_time_conv		temp_time_adjust	temp_unit_conv 	temp_adjust
+!C		temp_ser_time	temp_ser_temp
+    1                   2 	            		86400.0          	0.0					1.0					0.0 		! Pass aux Herons side (east boundary)
+     0.000    20.0
+    35.000    20.0
+    2                   2            			86400.0          	0.0					1.0					0.0		! Main Pass side (south boundary)
+     0.000    20.0
+    35.000    20.0
+    3                   2            			86400.0          	0.0					1.0					0.0		! River boundary
+     0.000    20.0
+    35.000    20.0
+
+
