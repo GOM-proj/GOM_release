@@ -29,6 +29,8 @@ For more detail, read the user manual Chapter 5 for compiling and executing the 
 Go to the source code folder (e.g.,):
   + ./GOM_Rv1.1.0/source/release/
 
+Open makefile, then change the two lines which related to the NetCDF library; see Section 5 in the included user manual.
+
 Then, type the following commands to compile source codes:
   + $make clean
   + $make all
