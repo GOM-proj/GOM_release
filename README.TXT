@@ -3,6 +3,9 @@ README by Jungwoo Lee
 
 This is the GOM version update notes.
 !=============================================================================!
+Rv1.2.0 (GOM_Dv89, source_v3) ------------------------------------------------!
+	This is the error corrected version & netcdf has been included
+
 Rv1.1.1 (GOM_Dv88) -----------------------------------------------------------!
 	Error associated with the momentum equation has been fixed.
 	This is more stable and accurate than previous versions.
