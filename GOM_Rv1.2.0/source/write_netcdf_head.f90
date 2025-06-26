@@ -100,31 +100,36 @@ subroutine write_netcdf_head
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
 					&	(/node_dimid,time_dimid/),varid_eta_node)) ! jw
 					call netcdf_check(nf90_put_att(ncid,varid_eta_node,"units","[m]"))
-					call netcdf_check(nf90_put_att(ncid,varid_eta_node,"long_name","water surface elevation at node [m]"))
+					call netcdf_check(nf90_put_att(ncid,varid_eta_node,"long_name",&
+					&	"water surface elevation at node [m]"))
 				else if(i==2) then
 					! jw
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
 					&	(/level_dimid,node_dimid,time_dimid/),varid_u_node))
 					call netcdf_check(nf90_put_att(ncid,varid_u_node,"units","[m/s]"))
-					call netcdf_check(nf90_put_att(ncid,varid_u_node,"long_name","velocity u (true east/west) at node (at each vertical level) [m/s]"))				
+					call netcdf_check(nf90_put_att(ncid,varid_u_node,"long_name",&
+					&	"velocity u (true east/west) at node (at each vertical level) [m/s]"))				
 				else if(i==3) then
 					! jw
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
 					&	(/level_dimid,node_dimid,time_dimid/),varid_v_node))
 					call netcdf_check(nf90_put_att(ncid,varid_v_node,"units","[m/s]"))
-					call netcdf_check(nf90_put_att(ncid,varid_v_node,"long_name","velocity v (true north/south) at node (at each vertical level) [m/s]"))				
+					call netcdf_check(nf90_put_att(ncid,varid_v_node,"long_name",&
+					&	"velocity v (true north/south) at node (at each vertical level) [m/s]"))				
 				else if(i==4) then
 					! jw
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
 					&	(/level_dimid,node_dimid,time_dimid/),varid_w_node))
 					call netcdf_check(nf90_put_att(ncid,varid_w_node,"units","[m/s]"))
-					call netcdf_check(nf90_put_att(ncid,varid_w_node,"long_name","velocity w at node (at each vertical level) [m/s]"))
+					call netcdf_check(nf90_put_att(ncid,varid_w_node,"long_name",&
+					&	"velocity w at node (at each vertical level) [m/s]"))
 				else if(i==5) then
 					! jw
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
 					&	(/layer_dimid,node_dimid,time_dimid/),varid_salt_node))
 					call netcdf_check(nf90_put_att(ncid,varid_salt_node,"units","[psu]"))
-					call netcdf_check(nf90_put_att(ncid,varid_salt_node,"long_name","salinity at horizontal nodal point at each veritcal layer [psu]"))				
+					call netcdf_check(nf90_put_att(ncid,varid_salt_node,"long_name",&
+					&	"salinity at horizontal nodal point at each veritcal layer [psu]"))				
 				else if(i==6) then
 					! jw
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
@@ -142,13 +147,15 @@ subroutine write_netcdf_head
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
 					&	(/node_dimid,time_dimid/),varid_wind_u_at_node))
 					call netcdf_check(nf90_put_att(ncid,varid_wind_u_at_node,"units","[m/s]"))
-					call netcdf_check(nf90_put_att(ncid,varid_wind_u_at_node,"long_name","wind speed in x-direction at each node [m/s]"))				
+					call netcdf_check(nf90_put_att(ncid,varid_wind_u_at_node,"long_name",&
+					&	"wind speed in x-direction at each node [m/s]"))				
 				else if(i==9) then
 					! jw
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
 					&	(/node_dimid,time_dimid/),varid_wind_v_at_node))
 					call netcdf_check(nf90_put_att(ncid,varid_wind_v_at_node,"units","[m/s]"))
-					call netcdf_check(nf90_put_att(ncid,varid_wind_v_at_node,"long_name","wind speed in y-direction at each node [m/s]"))				
+					call netcdf_check(nf90_put_att(ncid,varid_wind_v_at_node,"long_name",&
+					&	"wind speed in y-direction at each node [m/s]"))				
 				else if(i==10) then
 					! jw
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
@@ -160,31 +167,36 @@ subroutine write_netcdf_head
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
 					&	(/node_dimid,time_dimid/),varid_ubar_node))
 					call netcdf_check(nf90_put_att(ncid,varid_ubar_node,"units","[m/s]"))
-					call netcdf_check(nf90_put_att(ncid,varid_ubar_node,"long_name","vertically averaged velocity u (true east/wets) at node [m/s]"))				
+					call netcdf_check(nf90_put_att(ncid,varid_ubar_node,"long_name",&
+					&	"vertically averaged velocity u (true east/wets) at node [m/s]"))				
 				else if(i==12) then
 					! jw
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
 					&	(/node_dimid,time_dimid/),varid_vbar_node))
 					call netcdf_check(nf90_put_att(ncid,varid_vbar_node,"units","[m/s]"))
-					call netcdf_check(nf90_put_att(ncid,varid_vbar_node,"long_name","vertically averaged velocity v (true north/south) at node [m/s]"))				
+					call netcdf_check(nf90_put_att(ncid,varid_vbar_node,"long_name",&
+					&	"vertically averaged velocity v (true north/south) at node [m/s]"))				
 				else if(i==13) then
 					! jw
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
 					&	(/node_dimid,time_dimid/),varid_sbar_node))
 					call netcdf_check(nf90_put_att(ncid,varid_sbar_node,"units","[m/s]"))
-					call netcdf_check(nf90_put_att(ncid,varid_sbar_node,"long_name","vertically averaged salinity at node [psu]"))				
+					call netcdf_check(nf90_put_att(ncid,varid_sbar_node,"long_name",&
+					&	"vertically averaged salinity at node [psu]"))				
 				else if(i==14) then
 					! jw
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
 					&	(/node_dimid,time_dimid/),varid_tbar_node))
 					call netcdf_check(nf90_put_att(ncid,varid_tbar_node,"units","[m/s]"))
-					call netcdf_check(nf90_put_att(ncid,varid_tbar_node,"long_name","vertically averaged temperature at node [C]"))				
+					call netcdf_check(nf90_put_att(ncid,varid_tbar_node,"long_name",&
+					&	"vertically averaged temperature at node [C]"))				
 				else if(i==15) then
 					! jw
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_node(i),nf90_float,&
 					&	(/node_dimid,time_dimid/),varid_rbar_node))
 					call netcdf_check(nf90_put_att(ncid,varid_rbar_node,"units","[kg/m3]"))
-					call netcdf_check(nf90_put_att(ncid,varid_rbar_node,"long_name","vertically averaged water density (rho) at node [kg/m3]"))				
+					call netcdf_check(nf90_put_att(ncid,varid_rbar_node,"long_name",&
+					&	"vertically averaged water density (rho) at node [kg/m3]"))				
 				end if
 			end if
 		end do
@@ -199,7 +211,8 @@ subroutine write_netcdf_head
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_cell(i),nf90_float,&
 					&	(/cell_dimid,time_dimid/),varid_eta_cell)) ! jw
 					call netcdf_check(nf90_put_att(ncid,varid_eta_cell,"units","[m]"))
-					call netcdf_check(nf90_put_att(ncid,varid_eta_cell,"long_name","water surface elevation at cell center [m], [cell]"))
+					call netcdf_check(nf90_put_att(ncid,varid_eta_cell,"long_name",&
+					&	"water surface elevation at cell center [m], [cell]"))
 				else if(i==2) then
 					! jw
 					call netcdf_check(nf90_def_var(ncid,netcdf_variable_name_cell(i),nf90_float,&
