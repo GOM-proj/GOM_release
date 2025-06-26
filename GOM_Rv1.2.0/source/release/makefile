@@ -13,12 +13,9 @@ FCFLAGS += -fopenmp
 # Libraries needed for linking -----------------------------------------------#
 # There should be no space between LD_LIBRARY_PATH and "=" and directory_name
 LD_LIBRARY_PATH=-L/mingw64/lib -lnetcdff -lnetcdf
-
-# flags for all (e.g., look for system .mod files, required in gfortran)
 FCFLAGS += -I/mingw64/include
 
 # Give the name of the source file directory
-# Using this method, you can keep the source file directory clean without object files.
 VPATH=../ 
 # end of variable decleration ================================================#
 
@@ -160,8 +157,13 @@ all: $(objects)
 %.o: %.f
 	$(FC) $(FCFLAGS) -c $<
 
+# This is for Linux/Unix user
 clean:
 	rm -f *.o *.mod *.MOD *.exe
+
+# This is for the Windows user
+#clean:
+#	del -f *.o *.mod *.MOD *.exe
 	
 # End of makefile ============================================================#
 #=============================================================================#
