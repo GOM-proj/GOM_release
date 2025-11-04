@@ -7,7 +7,7 @@
 !!		windp_ser_time(t,i)
 !!		windp_u(t,i)
 !!		windp_v(t,i)
-!!		windp_p(t,i
+!!		windp_p(t,i)
 !! 
 subroutine read_windp_ser
 	use mod_global_variables
@@ -15,8 +15,8 @@ subroutine read_windp_ser
 	
 	implicit none
 	integer :: i, t
-	real(dp):: windp_time_conv, windp_time_adjust
-	real(dp):: temp1
+	real(dp):: windp_time_conv, windp_time_adjust, windp_w_unit_conv, windp_p_unit_conv
+	real(dp):: temp1, temp2, temp3, temp4
 	integer :: windp_ser_id_dummy
 	! jw
 	
@@ -28,10 +28,14 @@ subroutine read_windp_ser
 
 	! jw
 	do i=1,num_windp_ser
-		read(pw_windp_ser,*) windp_ser_id_dummy, windp_ser_data_num(i), windp_time_conv, windp_time_adjust, windp_station_node(i)
+		read(pw_windp_ser,*) windp_ser_id_dummy, windp_ser_data_num(i), windp_time_conv, windp_time_adjust, &
+		&	windp_w_unit_conv, windp_p_unit_conv, windp_station_node(i)
 		do t=1,windp_ser_data_num(i)
-			read(pw_windp_ser,*) temp1, windp_u(t,i), windp_v(t,i), windp_p(t,i)
+			read(pw_windp_ser,*) temp1, temp2, temp3, temp4 ! jw
 			windp_ser_time(t,i) = (temp1 + windp_time_adjust) * windp_time_conv ! jw
+			windp_u(t,i) = temp2*windp_w_unit_conv
+			windp_v(t,i) = temp3*windp_w_unit_conv
+			windp_p(t,i) = temp4*windp_p_unit_conv
 		end do
 	end do
 	close(pw_windp_ser)
