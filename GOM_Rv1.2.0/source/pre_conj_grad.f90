@@ -145,6 +145,12 @@ subroutine pre_conj_grad(na,nz,A,colidx,rowstr,b,x)
 		! jw
 		!$omp single
 			alpha = delta_new/dq
+! jw
+! jw
+! jw
+! jw
+! jw
+! jw
 		!$omp end single
 
 		!$omp do private(i)
@@ -184,7 +190,13 @@ subroutine pre_conj_grad(na,nz,A,colidx,rowstr,b,x)
 		
 		! jw
 		!$omp single
-			beta = delta_new / delta_old
+ 			beta = delta_new / delta_old
+! jw
+! jw
+! jw
+! jw
+! jw
+! jw
 		!$omp end single
 
 		! jw

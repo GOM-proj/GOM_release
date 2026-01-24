@@ -31,7 +31,7 @@ subroutine solve_free_surface_equation
 	integer,dimension(maxele*5) 	:: ja
 	integer :: n
    integer :: nz
-   integer :: array_check
+   integer :: array_check1, array_check2
    ! jw
 
 	! jw
@@ -181,10 +181,10 @@ subroutine solve_free_surface_equation
       ! jw
       ! jw
       ! jw
-      ! jw
-      ! jw
-      ! jw
-      ! jw
+      if(Qb_element_flag(i) /= 0) then ! jw
+       	ibnd = Qb_element_flag(i) ! jw
+       	rhs_1(i) = rhs_1(i) + Q_add(ibnd)*dt
+      end if
       
       ! jw
       if(ob_element_flag(i) > 0) then
@@ -263,12 +263,32 @@ subroutine solve_free_surface_equation
    ia(n+1) = nz+1 
 
    ! jw
+   array_check1 = 0
+   if(array_check1 == 1) then
+	   open(10,file='./check1.txt',form='formatted',status='replace')
+	   write(10,*) 'n = ', n
+	   write(10,*) 'ia = ', shape(ia)
+	   write(10,*) 'ja = ', shape(ja)
+	   write(10,*) 'a = ', shape(a1)
+	   write(10,*) 'rhs = ', shape(rhs_1)
+	   write(10,*) 'eta_guess = ', shape(eta_guess)   
+	   write(10,*)
+	   write(10,'(*(I4))') (ia(i), i=1,7)
+	   write(10,'(*(I4))') (ja(i), i=1,30)
+	   write(10,*) (a1(i), i=1,30)
+	   write(10,*) (rhs_1(i), i=1,6)
+	   write(10,*) (eta_guess(i), i=1,6)
+	   close(10)
+	   stop 'dddd'
+	end if
+
    ! jw
    ! jw
    ! jw
-   array_check = 0
-   if(array_check == 1) then
-	   open(10,file='./check.txt',form='formatted',status='replace')
+   ! jw
+   array_check2 = 0
+   if(array_check2 == 1) then
+	   open(10,file='./check2.txt',form='formatted',status='replace')
 	   write(10,*) 'area(maxele):'
 	   do i=1,maxele
 	   	write(10,*) 'area(',i,') = ', area(i)
