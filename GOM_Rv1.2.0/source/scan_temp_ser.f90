@@ -21,9 +21,10 @@ subroutine scan_temp_ser
 		
 		max_temp_data_num = 1 ! jw
 		max_temp_ser = num_temp_ser
-		
+
 		do i = 1, num_temp_ser
 			read(pw_temp_ser,*) i1, i2
+			
 			max_temp_data_num = MAX(max_temp_data_num,i2) ! jw
 			do t=1,i2
 				read(pw_temp_ser,*)

@@ -141,25 +141,42 @@ subroutine solve_free_surface_equation
       ! jw
       do l = 1, tri_or_quad(i)
          j = facenum_at_cell(l,i)
-         if(top_layer_at_face(j) /= 0 .and. boundary_type_of_face(j) /= -1) then ! jw
-            const1 = 0.0_dp
-            const2 = 0.0_dp
-            do k = 1, top_layer_at_face(j) - bottom_layer_at_face(j) + 1
-               kk = top_layer_at_face(j) + 1 - k
-               const1 = const1 + dz_face(kk,j)*un_face(kk,j) 	! jw
-               const2 = const2 + dz_face(kk,j)*AinvG1(k,j) 		! jw
-            end do
+         
+         ! jw
+         if(top_layer_at_face(j) /= 0) then
+         	! jw
+         	! jw
+         	! jw
+         	! jw
+         	! jw
+         	! jw
+         	! jw
+         	! jw
+         	! jw
+         	! jw
+         	if(boundary_type_of_face(j) 	== 0 .or. &
+         	&	boundary_type_of_face(j) 	>= 1 .or. &
+         	&	isflowside_river(j) 			/= 0 .or. &
+         	&	isflowside_WR(j) 				/= 0) then
+	            const1 = 0.0_dp
+	            const2 = 0.0_dp
+	            do k = 1, top_layer_at_face(j) - bottom_layer_at_face(j) + 1
+	               kk = top_layer_at_face(j) + 1 - k
+	               const1 = const1 + dz_face(kk,j)*un_face(kk,j) 	! jw
+	               const2 = const2 + dz_face(kk,j)*AinvG1(k,j) 		! jw
+	            end do
 
-            rhs_1(i) = rhs_1(i)                                                      &
-            &    	  - (1.0_dp-theta)*dt*sign_in_outflow(l,i)*face_length(j)*const1   &
-            &    	  -         theta *dt*sign_in_outflow(l,i)*face_length(j)*const2
+	            rhs_1(i) = rhs_1(i)                                                      &
+	            &    	  - (1.0_dp-theta)*dt*sign_in_outflow(l,i)*face_length(j)*const1   &
+	            &    	  -         theta *dt*sign_in_outflow(l,i)*face_length(j)*const2
+	         end if
          end if
 			
 			! jw
-         if(isflowside2(j) > 0) then
-            ibnd  = isflowside2(j)
-            vnorm = u_boundary(ibnd)*cos_theta(j)   &
-				&   	+ v_boundary(ibnd)*sin_theta(j)
+         if(isflowside_radiation(j) > 0) then
+            ibnd  = isflowside_radiation(j)
+            vnorm = TIDEu_boundary(ibnd)*cos_theta(j)   &
+				&   	+ TIDEv_boundary(ibnd)*sin_theta(j)
 
             do k = bottom_layer_at_face(j),top_layer_at_face(j)
                rhs_1(i) = rhs_1(i) - dt*face_length(j)*dz_face(k,j)*vnorm
@@ -181,10 +198,22 @@ subroutine solve_free_surface_equation
       ! jw
       ! jw
       ! jw
-      if(Qb_element_flag(i) /= 0) then ! jw
-       	ibnd = Qb_element_flag(i) ! jw
-       	rhs_1(i) = rhs_1(i) + Q_add(ibnd)*dt
+! jw
+! jw
+! jw
+! jw
+      
+! jw
+! jw
+! jw
+! jw
+      
+      if(SS_element_flag(i) /= 0) then
+      	ibnd = SS_element_flag(i)
+      	rhs_1(i) = rhs_1(i) + Q_add_SS(ibnd)*dt
       end if
+      
+      
       
       ! jw
       if(ob_element_flag(i) > 0) then
@@ -210,6 +239,8 @@ subroutine solve_free_surface_equation
 		            ! jw
 		            rhs_1(i) = rhs_1(i) + dzT_Ai_dz*eta_at_ob_new(ob_element_flag(i))
 		            ! jw
+		            ! jw
+		            
 		            ! jw
 		         end if
       		end if
@@ -279,7 +310,7 @@ subroutine solve_free_surface_equation
 	   write(10,*) (rhs_1(i), i=1,6)
 	   write(10,*) (eta_guess(i), i=1,6)
 	   close(10)
-	   stop 'dddd'
+	   stop 'stop: aray_check1'
 	end if
 
    ! jw
@@ -341,7 +372,7 @@ subroutine solve_free_surface_equation
 	   	write(10,*) 'eta_guess(',i,') = ', eta_guess(i)
 	   end do
 	   close(10)
-	   stop 'dddd'
+	   stop 'stop: aray_check2'
 	end if
 
    ! jw
@@ -455,7 +486,11 @@ subroutine solve_free_surface_equation
 		write(pw_dia_freesurface,'(A)') 'i, eta_node(maxnod)'
 		do i=1,maxnod
 			write(pw_dia_freesurface,'(I5,E15.5)') i, eta_node(i)
-		end do		
+		end do
+		
+! jw
+! jw
+! jw
 	end if
 
 	! jw

@@ -718,7 +718,7 @@ subroutine solve_transport_equation_v19
 					do l=1,tri_or_quad(i)
 						j = facenum_at_cell(l,i)
 						ii = adj_cellnum_at_cell(l,i)
-						if(boundary_type_of_face(j) /= -1 .or. isflowside3(j) > 0 .or. isflowside4(j) > 0) then ! jw
+						if(boundary_type_of_face(j) /= -1 .or. isflowside_river(j) > 0 .or. isflowside_WR(j) > 0) then ! jw
 							! jw
 							! jw
 							! jw
@@ -770,7 +770,7 @@ subroutine solve_transport_equation_v19
 						j = facenum_at_cell(l,i)
 						ii = adj_cellnum_at_cell(l,i)
 						
-						if(boundary_type_of_face(j) /= -1 .or. isflowside3(j) > 0 .or. isflowside4(j) > 0) then ! jw
+						if(boundary_type_of_face(j) /= -1 .or. isflowside_river(j) > 0 .or. isflowside_WR(j) > 0) then ! jw
 							! jw
 							! jw
 							! jw
@@ -1056,7 +1056,7 @@ subroutine solve_transport_equation_v19
 			end if
 			if(ith_WR > 0) then ! jw
 				! jw
-				j = WR_boundary(i,2) ! jw
+				j = WR_boundary(ith_WR,2) ! jw
 				if(WR_layer(ith_WR) == 999) then
 					! jw
 					k = top_layer_at_face(j)
@@ -1100,7 +1100,7 @@ subroutine solve_transport_equation_v19
 					! jw
 					! jw
 					! jw
-					if(boundary_type_of_face(j) /= -1  .or. isflowside3(j) > 0 .or. isflowside4(j) > 0) then ! jw
+					if(boundary_type_of_face(j) /= -1  .or. isflowside_river(j) > 0 .or. isflowside_WR(j) > 0) then ! jw
 						! jw
 			      	! jw
 			      	Q_jk_theta2(l) = Q_jk_theta(k,j)*sign_in_outflow(l,i)

@@ -143,6 +143,8 @@ subroutine read_main_inp
 			      end if
 			   end do
 			   if(MSL > z_level(maxlayer)) then
+			   	! jw
+			   	
 			   	write(pw_run_log,'(A,A)') 'Error in main.inp, Card#: ', card_num
 			      write(pw_run_log,'(A)') 'Mean Sea Level(MSL) is above the maximum vertical level, i.e., MSL > z_level(maxlayer)'
 			      write(*,*)              'Mean Sea Level(MSL) is above the maximum vertical level, i.e., MSL > z_level(maxlayer)'
@@ -824,7 +826,7 @@ subroutine read_main_inp
 							! jw
 							Q_boundary(i,1) = element_id 			! jw
 							Q_boundary(i,2) = face_id 				! jw
-							isflowside3(Q_boundary(i,2)) = i 	! jw
+							isflowside_river(Q_boundary(i,2)) = i 	! jw
 							Qb_element_flag(element_id) = i 		! jw
 						end do
 						
@@ -884,7 +886,7 @@ subroutine read_main_inp
 					! jw
 					Q_boundary(i,1) = element_id 			! jw
 					Q_boundary(i,2) = face_id 				! jw
-					isflowside3(Q_boundary(i,2)) = i 	! jw
+					isflowside_river(Q_boundary(i,2)) = i 	! jw
 					Qb_element_flag(element_id) = i 		! jw
 					
 					! jw
@@ -948,9 +950,13 @@ subroutine read_main_inp
 					! jw
 					WR_boundary(i,1) = element_id 			! jw
 					WR_boundary(i,2) = face_id 				! jw
-					isflowside4(WR_boundary(i,2)) = i 	! jw
+					isflowside_WR(WR_boundary(i,2)) = i 	! jw
 					WR_element_flag(element_id) = i 		! jw
 				end do
+
+				! jw
+				call read_q_ser ! jw
+				! jw
 				
 				card_num = "24"
 			case("24")
@@ -972,6 +978,11 @@ subroutine read_main_inp
 					! jw
 					SS_element_flag(SS_cell(i)) = i
 				end do
+				
+				! jw
+				call read_q_ser ! jw
+				! jw
+				
 				card_num = "25"
 			case("25")	! jw
 				read(pw_main_inp,*) no_Etide_species, Etide_cutoff_depth

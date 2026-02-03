@@ -17,8 +17,8 @@ subroutine compute_boundary_velocity
    ! jw
    
    ! jw
-   u_boundary = 0.0_dp
-   v_boundary = 0.0_dp
+   TIDEu_boundary = 0.0_dp
+   TIDEv_boundary = 0.0_dp
    
    ! jw
 ! jw
@@ -98,7 +98,7 @@ subroutine compute_boundary_velocity
 	if(num_WR_cell > 0) then
 		allocate(channel_width_wr(num_WR_cell))
 		channel_width_wr = 0.0_dp
-		
+				
 		! jw
 		call calculate_Q_WR
 		
@@ -131,8 +131,8 @@ subroutine compute_boundary_velocity
 			end if
 			temp_depth = dz_face(k,j)
 	      if(temp_depth < dry_depth) then
-	         write(pw_run_log,*)  'Error: Writhdraw/Return boundary is dry at WR_cell#: ', i
-	         write(*,*)  'Error: Writhdraw/Return boundary is dry at WR_cell#: ', i
+	         write(pw_run_log,*)  'Error: Withdraw/Return boundary is dry at WR_cell#: ', i
+	         write(*,*)  'Error: Withdraw/Return boundary is dry at WR_cell#: ', i
 	         stop
 	      end if
 

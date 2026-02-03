@@ -353,7 +353,8 @@ module mod_global_variables
    integer, save, allocatable :: 					&
    &			q_data_num(:)									! jw
    
-   integer, save :: q_interp_method
+   integer, save, allocatable :: 					&
+   &			q_interp_method(:)							! jw
    integer, save :: face_id, element_id
 	integer, save :: max_q_data_num 						! jw
 	
@@ -365,7 +366,7 @@ module mod_global_variables
 	integer, save :: max_WR_bc
 	integer, save, allocatable ::	&
 	&			WR_boundary(:,:),		&	! jw
-	&			isflowside4(:),		&	! jw
+	&			isflowside_WR(:),		&	! jw
 	&			WR_element_flag(:)		! jw
    real(dp),save, allocatable, dimension(:) :: 	&
    &			WRu_boundary, 								&	! jw
@@ -700,8 +701,8 @@ module mod_global_variables
    &			v_face_level									! jw
    
    real(dp),save,allocatable,dimension(:) :: 	&
-   &			u_boundary, 								&	! jw
-   &			v_boundary										! jw
+   &			TIDEu_boundary,							&	! jw
+   &			TIDEv_boundary									! jw
    
    ! jw
    real(dp),save,allocatable,dimension(:,:) :: 	&
@@ -839,9 +840,9 @@ module mod_global_variables
    ! jw
    integer,save,allocatable,dimension(:) :: 		&
    &			boundary_type_of_face,					&	! jw
-   &			isflowside,		 							&	! jw
-   &			isflowside2,								&	! jw
-   &			isflowside3										! jw
+   &			isflowside_tide,		 					&	! jw
+   &			isflowside_radiation,					&	! jw
+   &			isflowside_river								! jw
 
 
    integer, save :: i_sponge_layer_flag

@@ -30,9 +30,6 @@ subroutine read_q_ser
 	write(pw_run_log,*) "		Now, you are in 'read_input.f90 -> subroutine read_q_ser"
 
 	! jw
-	! jw
-	! jw
-	! jw
 	if(q_ser_shape == 1) then
 		! jw
 		open(pw_q_ser,file=id_q_ser1,form='formatted',status='old')
@@ -41,13 +38,14 @@ subroutine read_q_ser
 		call skip_header_lines(pw_q_ser,id_q_ser1)
 		
 		! jw
-		do i=1,num_q_ser
+		do i=1,num_Q_ser
 			read(pw_q_ser,*) q_ser_id_dummy, q_data_num(i), &
-			&	q_time_conv, q_time_adjust, q_unit_conv, q_adjust, q_interp_method
+			&	q_time_conv, q_time_adjust, q_unit_conv, q_adjust, q_interp_method(i)
 			do t = 1,q_data_num(i)
 				read(pw_q_ser,*) rtemp1, rtemp2
 				q_ser_time(t,i) = (rtemp1 + q_time_adjust) * q_time_conv	! jw
 				q_ser_Q(t,i) = (rtemp2 + q_adjust) * q_unit_conv		! jw
+				! jw
 			end do
 		end do
 	else if(q_ser_shape == 2) then
@@ -90,7 +88,7 @@ subroutine read_q_ser
 		write(pw_check_Q,*)
 		
 		! jw
-		if(q_interp_method == 1) then	! jw
+		if(q_interp_method(1) == 1) then	! jw
 			do elapsed_t=0,int(ndt*dt),(30*60) ! jw
 				u2 = elapsed_t	! jw
 				write(pw_check_Q,'(F20.10)',advance = 'no') u2/86400.0_dp
@@ -110,7 +108,7 @@ subroutine read_q_ser
 				end do
 				write(pw_check_Q,*)
 			end do
-		else if(q_interp_method == 2) then	! jw
+		else if(q_interp_method(1) == 2) then	! jw
 			order = 2	! jw
 			allocate(x(order+1), y(order+1), difference(max_q_data_num))
 			x = 0.0_dp

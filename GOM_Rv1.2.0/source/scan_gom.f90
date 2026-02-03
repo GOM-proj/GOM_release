@@ -209,31 +209,35 @@ subroutine scan_gom
 	read(pw_main_inp,*) num_Qb_cell, Qbc_info_option, num_Q_ser, check_Q, Q_ser_shape
 	max_Q_bc 	= MAX(1,num_Qb_cell)
 	max_Q_ser 	= MAX(1,num_Q_ser)
-	
-	if(num_Qb_cell > 0) then
-		if(num_Q_ser > 0) then
-			call scan_q_ser ! jw
-		end if
-	end if
-	max_q_data_num = MAX(1,max_q_data_num)
-	
-	write(*,'(A30,I10)') 'max_Q_bc = ', max_Q_bc
-	write(*,'(A30,I10)') 'max_Q_ser = ', max_Q_ser
-	write(*,'(A30,I10)') 'max_q_data_num = ', max_q_data_num
 
+	
 	! jw
 	card_num = "C23"
 	call seek_card(card_num)
 	read(pw_main_inp,*) num_WR_cell
 	max_WR_bc = MAX(1,num_WR_cell)
-	write(*,'(A30,I10)') 'max_WR_bc = ', max_WR_bc
 	
 	! jw
 	card_num = "C24"
 	call seek_card(card_num)
 	read(pw_main_inp,*) num_SS_cell
 	max_SS_bc = MAX(1,num_SS_cell)
+	
+	! jw
+	! jw
+ 	if(num_Qb_cell > 0 .or. num_WR_cell > 0 .or. num_SS_cell > 0) then
+		if(num_Q_ser > 0) then
+			call scan_q_ser ! jw
+		end if
+ 	end if
+	max_q_data_num = MAX(1,max_q_data_num)
+	
+	write(*,'(A30,I10)') 'max_Q_bc = ', max_Q_bc
+	write(*,'(A30,I10)') 'max_Q_ser = ', max_Q_ser
+	write(*,'(A30,I10)') 'max_q_data_num = ', max_q_data_num
+	write(*,'(A30,I10)') 'max_WR_bc = ', max_WR_bc
 	write(*,'(A30,I10)') 'max_SS_bc = ', max_SS_bc
+
 	
 	! jw
 	card_num = "C25"

@@ -10,7 +10,7 @@
 !! 		AinvG1: 	normal velocity component,				Eq(46), just part
 !! 		AinvG2: 	tangential velocity component,		Eq(46), just part
 !! 		AinvDeltaZ1: normal velocity component,		Eq(46), just part
-!! 		AinvDeltaZ2:tangential velocity component, 	Eq(46), just part
+!! 		AinvDeltaZ2: tangential velocity component, 	Eq(46), just part
 !! 
 subroutine solve_momentum_equation
    use mod_global_variables
@@ -526,6 +526,7 @@ subroutine solve_momentum_equation
 ! jw
          
 			! jw
+			! jw
 ! jw
 ! jw
          ! jw
@@ -534,25 +535,38 @@ subroutine solve_momentum_equation
          !====================================================================!
          ! jw
          ! jw
+         ! jw
+         ! jw
+         ! jw
+         ! jw
+         ! jw
          !====================================================================!
 
 			! jw
-         if(isflowside(j) > 0) then ! jw
+			! jw
+			if(boundary_type_of_face(j) == -1) then
 				! jw
-            ibnd    =  isflowside(j) ! jw
+				! jw
+				! jw
+				G1(k) = 0.0_dp ! jw
+			end if
+			
+			! jw
+			! jw
+			! jw
+			! jw
+         if(isflowside_tide(j) > 0) then ! jw
+				! jw
+            ibnd    =  isflowside_tide(j) ! jw
             ! jw
             
             ! jw
             ! jw
             ! jw
-            G1(k) =  u_boundary(ibnd)*cos_theta(j)   &
-            &     +  v_boundary(ibnd)*sin_theta(j)
-            G2(k) = -u_boundary(ibnd)*sin_theta(j)   &
-            &     +  v_boundary(ibnd)*cos_theta(j)
-         else if(boundary_type_of_face(j) == -1) then 
-				! jw
-         	! jw
-            G1(k) = 0.0_dp ! jw
+            G1(k) =  TIDEu_boundary(ibnd)*cos_theta(j)   &
+            &     +  TIDEv_boundary(ibnd)*sin_theta(j)
+            G2(k) = -TIDEu_boundary(ibnd)*sin_theta(j)   &
+            &     +  TIDEv_boundary(ibnd)*cos_theta(j)
          end if
          
          ! jw
@@ -562,37 +576,59 @@ subroutine solve_momentum_equation
          ! jw
          ! jw
          ! jw
-         if(isflowside3(j) > 0) then
- 			 	ibnd = isflowside3(j)
+         if(isflowside_river(j) > 0) then
+ 			 	ibnd = isflowside_river(j)
  				
  				! jw
  				! jw
+ 				! jw
+ 				! jw
+				! jw
+				! jw
+				! jw
             G1(k) = G1(k) + dz_face(kk,j) * Qu_boundary(ibnd)
-            !! G2(k) =  G2(k) + dz_face(kk,j) * Qv_boundary(ibnd)
+            ! jw
+            
+            ! jw
+            ! jw
+            ! jw
+            ! jw
+            ! jw
+            ! jw
+            ! jw
+            ! jw
+            ! jw
 			end if
 			
 			! jw
-			if(isflowside4(j) > 0) then
-				ibnd = isflowside4(j)
+			! jw
+			! jw
+			! jw
+			if(isflowside_WR(j) > 0) then
+				ibnd = isflowside_WR(j)
 				if(WR_layer(ibnd) == 999) then
 					! jw
 					if(kk == top_layer_at_face(j)) then
 						G1(k) = G1(k) + dz_face(kk,j) * WRu_boundary(ibnd)
+						! jw
 					end if
 				else if(WR_layer(ibnd) == 0) then
 					! jw
 					if(kk == bottom_layer_at_face(j)) then
 						! jw
 						G1(k) = G1(k) + dz_face(kk,j) * WRu_boundary(ibnd)
+						! jw
 					end if
 				else
+					! jw
 					if(kk == WR_layer(ibnd)) then
 						G1(k) = G1(k) + dz_face(kk,j) * WRu_boundary(ibnd)
+						! jw
 					end if
 				end if
 			end if
-
-
+			! jw
+			
 			! jw
          rhs(k,1) = G1(k)
          rhs(k,2) = G2(k)
@@ -619,108 +655,18 @@ subroutine solve_momentum_equation
 		! jw
 		! jw
 		! jw
- 		if(isflowside(j) > 0) then
-			! jw
-			! jw
- 			do k=1,num_vertical_layer
-  				AinvG1(k,j) = G1(k)
-  				AinvG2(k,j) = G2(k)				
- 			end do			
- 		else if(boundary_type_of_face(j) == -1 .and. isflowside3(j) == 0 .and. isflowside4(j) == 0) then
-			! jw
-			! jw
-			! jw
- 			do k=1,num_vertical_layer
-  				AinvG1(k,j) = 0.0_dp
-  				AinvG2(k,j) = solution(k,2)
- 			end do
- 		else
-			! jw
-			! jw
- 			do k=1,num_vertical_layer
- 				AinvG1(k,j) = solution(k,1)
- 				AinvG2(k,j) = solution(k,2)
- 			end do			
- 		end if
-
-		! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-			
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-		
- 		! jw
- 		if(isflowside(j) > 0) then
-			! jw
-			! jw
- 			do k=1,num_vertical_layer
- 				AinvDeltaZ1(k,j) = 0.0_dp
-  				AinvDeltaZ2(k,j) = 0.0_dp
-  			end do
-		else if(boundary_type_of_face(j) == -1) then 
 		! jw
 		! jw
 		! jw
 		! jw
-		
-			! jw
-			! jw
-			! jw
- 			do k=1,num_vertical_layer
-  				AinvDeltaZ1(k,j) = 0.0_dp
-  				AinvDeltaZ2(k,j) = solution(k,3)
- 			end do
- 		else
-			! jw
-			! jw
- 			do k=1,num_vertical_layer
- 				AinvDeltaZ1(k,j) = solution(k,3)
- 	 			AinvDeltaZ2(k,j) = solution(k,3)
- 	 		end do			
- 		end if
-
 		! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-			
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-
-
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-! jw
-
+		! jw
+		do k = 1, num_vertical_layer ! jw
+			AinvG1(k,j) = solution(k,1)
+			AinvG2(k,j) = solution(k,2)
+			AinvDeltaZ1(k,j) = solution(k,3)
+ 			AinvDeltaZ2(k,j) = solution(k,3)			
+		end do
 	end do ! jw
 	!omp end parallel do
 
@@ -736,5 +682,9 @@ subroutine solve_momentum_equation
 	 		&	(AinvDeltaZ1(k,j), k=1,maxlayer), &
 	 		&	(AinvDeltaZ2(k,j), k=1,maxlayer)
 	 	end do
+	 	
+! jw
+! jw
+! jw
 	end if	
 end subroutine solve_momentum_equation

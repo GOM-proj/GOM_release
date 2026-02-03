@@ -17,8 +17,7 @@ subroutine calculate_Q
 	real(dp), allocatable :: x(:), y(:), difference(:)
 	!! end of local variables ------------------------------------------------!!
 	
-	! jw
-	if(q_interp_method == 1) then	! jw
+	if(q_interp_method(1) == 1) then	! jw
 		! jw
 		u2 = julian_day*86400.0 ! jw
 		
@@ -43,7 +42,7 @@ subroutine calculate_Q
 				end if
 			end do
 		end do
-	else if(q_interp_method == 2) then	! jw
+	else if(q_interp_method(1) == 2) then	! jw
 		order = 2	! jw
 		allocate(x(order+1), y(order+1), difference(max_q_data_num))
 		x = 0.0_dp
@@ -89,7 +88,7 @@ subroutine calculate_Q
 			Q_add(i) = lagrange_sum*Q_portion(i)					
 		end do
 		deallocate(x,y,difference)		
-	else if(q_interp_method == 3) then	! jw
+	else if(q_interp_method(1) == 3) then	! jw
 		! jw
 	end if
 	

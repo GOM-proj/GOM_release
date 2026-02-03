@@ -18,7 +18,7 @@ subroutine calculate_Q_SS
 	!! end of local variables ------------------------------------------------!!
 	
 	! jw
-	if(q_interp_method == 1) then	! jw
+	if(q_interp_method(1) == 1) then	! jw
 		! jw
 		u2 = julian_day*86400.0 ! jw
 		
@@ -43,7 +43,7 @@ subroutine calculate_Q_SS
 				end if
 			end do
 		end do
-	else if(q_interp_method == 2) then	! jw
+	else if(q_interp_method(1) == 2) then	! jw
 		order = 2	! jw
 		allocate(x(order+1), y(order+1), difference(max_q_data_num))
 		x = 0.0_dp
@@ -89,7 +89,7 @@ subroutine calculate_Q_SS
 			Q_add_SS(i) = lagrange_sum*SS_portion(i)
 		end do
 		deallocate(x,y,difference)		
-	else if(q_interp_method == 3) then	! jw
+	else if(q_interp_method(1) == 3) then	! jw
 		! jw
 	end if
 	

@@ -87,16 +87,16 @@ subroutine allocate_variables
 	allocate(top_layer_at_face(maxface),									& 	! jw
 	&			bottom_layer_at_face(maxface),								&	! jw
 	&			boundary_type_of_face(maxface),								&	! jw
-	&			isflowside(maxface),												&	! jw
-	&			isflowside2(maxface),											&	! jw
-	&			isflowside3(maxface),											&	! jw
+	&			isflowside_tide(maxface),										&	! jw
+	&			isflowside_radiation(maxface),								&	! jw
+	&			isflowside_river(maxface),										&	! jw
 	&			coriolis_factor(maxface))											! jw
 	top_layer_at_face 		= 0
 	bottom_layer_at_face 	= 0
 	boundary_type_of_face 	= 0
-	isflowside 					= 0
-	isflowside2 				= 0
-	isflowside3 				= 0
+	isflowside_tide 			= 0
+	isflowside_radiation 	= 0
+	isflowside_river 			= 0
 	coriolis_factor 			= 0.0_dp
  
    ! jw
@@ -385,8 +385,9 @@ subroutine allocate_variables
 	Q_temp_ser_id 	= 0
 	
 
-	allocate(q_data_num(max_Q_ser))
+	allocate(q_data_num(max_Q_ser),q_interp_method(max_Q_ser))
 	q_data_num 	= 0
+	q_interp_method = 0
 
 	allocate(q_ser_time(max_q_data_num,max_Q_ser), &
 	&			q_ser_Q(max_q_data_num,max_Q_ser))
@@ -405,10 +406,10 @@ subroutine allocate_variables
 	Q_portion 	= 0.0_dp	
 	Q_add 		= 0.0_dp
 	
-   allocate(u_boundary(num_ob_cell), &
-   &			v_boundary(num_ob_cell))
-   u_boundary = 0.0_dp
-   v_boundary = 0.0_dp
+   allocate(TIDEu_boundary(num_ob_cell), &
+   &			TIDEv_boundary(num_ob_cell))
+   TIDEu_boundary = 0.0_dp
+   TIDEv_boundary = 0.0_dp
    
 	allocate(salt_at_obck(maxlayer,num_ob_cell), &
 	&			temp_at_obck(maxlayer,num_ob_cell), &
@@ -434,10 +435,10 @@ subroutine allocate_variables
 	WR_temp_ser_id = 0
 
 	allocate(WR_boundary(max_WR_bc,2),	&
-	&			isflowside4(maxface),		&
+	&			isflowside_WR(maxface),		&
 	&			WR_element_flag(maxele))
 	WR_boundary = 0
-	isflowside4 = 0
+	isflowside_WR = 0
 	WR_element_flag = 0
 
 	allocate(WRu_boundary(max_WR_bc), &

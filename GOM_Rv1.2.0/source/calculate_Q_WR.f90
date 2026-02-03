@@ -17,11 +17,10 @@ subroutine calculate_Q_WR
 	real(dp), allocatable :: x(:), y(:), difference(:)
 	!! end of local variables ------------------------------------------------!!
 	
-	! jw
-	if(q_interp_method == 1) then	! jw
+	if(q_interp_method(1) == 1) then	! jw
 		! jw
 		u2 = julian_day*86400.0 ! jw
-		
+
 		! jw
 		v2 = 0.0_dp
 		
@@ -38,12 +37,12 @@ subroutine calculate_Q_WR
 					v3 = q_ser_Q(t  ,WR_Q_ser_id(i))		! jw
 				
 					v2 = (u2-u1)*(v3-v1)/(u3-u1)+v1	! jw
-					Q_add_WR(i) = v2*WR_portion(i)
+					Q_add_WR(i) = v2*WR_portion(i)						
 					exit
 				end if
 			end do
 		end do
-	else if(q_interp_method == 2) then	! jw
+	else if(q_interp_method(1) == 2) then	! jw
 		order = 2	! jw
 		allocate(x(order+1), y(order+1), difference(max_q_data_num))
 		x = 0.0_dp
@@ -89,7 +88,7 @@ subroutine calculate_Q_WR
 			Q_add_WR(i) = lagrange_sum*WR_portion(i)
 		end do
 		deallocate(x,y,difference)		
-	else if(q_interp_method == 3) then	! jw
+	else if(q_interp_method(1) == 3) then	! jw
 		! jw
 	end if
 	
