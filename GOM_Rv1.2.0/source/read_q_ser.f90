@@ -22,7 +22,7 @@ subroutine read_q_ser
 	integer :: order, min_index, shift_num, ii, jj
 	real(dp):: lagrange_sum, lagrange_product
 	real(dp), allocatable :: x(:), y(:), difference(:)
-	integer :: itemp
+	integer :: itemp, itemp2
 	real(dp),allocatable,dimension(:) :: q_buff
 	! jw
 
@@ -59,9 +59,10 @@ subroutine read_q_ser
 		
 		! jw
 		read(pw_q_ser,*) q_ser_id_dummy, itemp, &
-		&	q_time_conv, q_time_adjust, q_unit_conv, q_adjust
+		&	q_time_conv, q_time_adjust, q_unit_conv, q_adjust, itemp2
 		do i=1,num_q_ser
 			q_data_num(i) = itemp
+			q_interp_method(i) = itemp2
 		end do
 		
 		do t=1,itemp
