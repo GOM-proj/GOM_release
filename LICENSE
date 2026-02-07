@@ -10,7 +10,8 @@ This License Agreement ("Agreement") governs the use, modification, and distribu
 2.	Permitted Use and Restrictions
   + Users are granted permission to use the GOM for personal, academic, or non-commercial purposes.
   + Users may modify and enhance the GOM under the condition that such modifications are implemented in collaboration with the Original Developers, as outlined in Section 3.
-  + The GOM may be used for commercial applications only with explicit permission from Dr. Jungwoo Lee, the leader of the GOM development team.
+  + The GOM may be used for commercial applications only with explicit prior written permission of Dr. Jungwoo Lee, the leader of the GOM development team.
+  + If a standalone software application or product is developed based on or derived from the GOM and is distributed or sold for commercial purposes, twenty percent (20%) of the net profit generated from such commercial use shall belong to the Original Developers, Dr. Jungwoo Lee and Dr. Jun Lee, unless otherwise agreed upon in writing. 
 3.	Modification and Collaboration
   + Users may propose modifications or updates to the GOM. All proposed changes must be submitted to and approved by Dr. Jungwoo Lee for integration into the original version of the Software. Once approved, the updated version may be officially redistributed.
   + Users shall not independently distribute modified or updated versions of the GOM.
@@ -19,7 +20,7 @@ This License Agreement ("Agreement") governs the use, modification, and distribu
     + 2.	Sharing major modifications made to the code.
     + 3.	Contributing to discussions on model deficiencies, needed improvements, additions, and successes.
   + These mechanisms aim to benefit the entire GOM user community by facilitating the quick identification of issues, proposing solutions, and supporting the further development of the GOM source code and associated tools for processing, visualizing, and interpreting GOM model outputs.
-  + Users agree to acknowledge GOM in any publications resulting from its use and to refer to the model by its name, ìGOM.î
+  + Users agree to acknowledge GOM in any publications resulting from its use and to refer to the model by its name, ‚ÄúGOM.‚Äù
 4.	Restrictions
   + Redistribution of the GOM, whether in its original form or with modifications, is strictly prohibited without the explicit written permission of Dr. Jungwoo Lee.
   + Users may not sublicense, rent, lease, or otherwise transfer rights to the GOM.
