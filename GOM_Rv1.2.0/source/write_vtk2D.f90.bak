@@ -75,7 +75,7 @@ subroutine write_vtk2D
 		write(pw_vtk2D,*)
 		write(pw_vtk2D,'(A)') 'VECTORS Velocity(m/s) float'
 		do i=1,maxnod
-			write(pw_vtk2D,'(F15.5, F15.5, F15.5)') &
+			write(pw_vtk2D,'(F15.5 F15.5 F15.5)') &
 			&	ubar_node(i), vbar_node(i), 0.0
 		end do
 	end if
