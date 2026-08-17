@@ -115,6 +115,20 @@ subroutine solve_momentum_equation
 		! jw
 		! jw
 		! jw
+		! jw
+		! jw
+		! jw
+		! jw
+		! jw
+		! jw
+		! jw
+		! jw
+		! jw
+		! jw
+		! jw
+		! jw
+		! jw
+		! jw
 		
 		! jw
       do k = bottom_layer_at_face(j)+1, top_layer_at_face(j)-1
@@ -124,10 +138,10 @@ subroutine solve_momentum_equation
       	! jw
       	! jw
       	! jw
-         kk = top_layer_at_face(j) - k + 1 									! jw
+         kk = top_layer_at_face(j) - k + 1 		! jw
 			
-         a_lower_mat(kk)    = -dt * Av(k,  j)/dzhalf_face(k  ,j) 	! jw
-         c_upper_mat(kk)    = -dt * Av(k-1,j)/dzhalf_face(k-1,j) 	! jw
+         a_lower_mat(kk)    = -dt * Av_face(k,  j)/dzhalf_face(k  ,j) 	! jw
+         c_upper_mat(kk)    = -dt * Av_face(k-1,j)/dzhalf_face(k-1,j) 	! jw
          b_diagonal_mat(kk) = -a_lower_mat(kk) + dz_face(k,j) - c_upper_mat(kk)
       end do
 
@@ -145,7 +159,7 @@ subroutine solve_momentum_equation
       else ! jw
 			! jw
 			! jw
-         c_upper_mat(1) = -dt * Av(top_layer_at_face(j)-1,j) /	dzhalf_face(top_layer_at_face(j)-1,j)
+         c_upper_mat(1) = -dt * Av_face(top_layer_at_face(j)-1,j) /	dzhalf_face(top_layer_at_face(j)-1,j)
 
 			! jw
 			! jw
@@ -162,7 +176,7 @@ subroutine solve_momentum_equation
 
 			! jw
 			! jw
-         a_lower_mat(num_vertical_layer) = -dt * Av(bottom_layer_at_face(j),j) / dzhalf_face(bottom_layer_at_face(j),j)
+         a_lower_mat(num_vertical_layer) = -dt * Av_face(bottom_layer_at_face(j),j) / dzhalf_face(bottom_layer_at_face(j),j)
          
          b_diagonal_mat(num_vertical_layer) = &
          &	-a_lower_mat(num_vertical_layer) + dz_face(bottom_layer_at_face(j),j) + Gamma_B(j)*dt ! jw
@@ -320,11 +334,11 @@ subroutine solve_momentum_equation
             
 				! jw
 				! jw
-            Kh(k,j) = hdiff * area(adj_cellnum_at_face(1,j)) ! jw
+            Kh_face(k,j) = hdiff * area(adj_cellnum_at_face(1,j)) ! jw
             
             ! jw
             hdiff = hdiff + Ah_0
-            Kh(k,j) = Kh(k,j) + Kh_0
+            Kh_face(k,j) = Kh_face(k,j) + Kh_0
 
 				! jw
             d2udy = 4.0_dp*(temp(3)+temp(1)-2*un_face(kk,j))/face_length(j)**2

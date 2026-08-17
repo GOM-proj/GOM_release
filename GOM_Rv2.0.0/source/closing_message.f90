@@ -48,10 +48,11 @@ subroutine closing_message
 	write(pw_run_log,'(A35,I4,A1,I2,A1,I2, A3, I2,A1,I2,A1,I2)') &
 	&                "Today is (yyyy:mm:dd - hh:mm:ss): ", &
 	&                 values(1),":",values(2),":",values(3)," - ",values(5),":",values(6),":",values(7) 
-	write(pw_run_log,'(A22,F10.0,A10)') &
+	write(pw_run_log,'(A35,F10.0,A10)') &
 	&						"Total cpu time     = ", finish - start,"seconds" 		! jw
-	write(pw_run_log,'(A22,F10.0,A10, A1,I2,A1,I2,A1,I2,A1)') &
+	write(pw_run_log,'(A35,F10.0,A10, A1,I2,A1,I2,A1,I2,A1)') &
 	&						"Total elapsed time = ", total_elapsed_time,"seconds", '[',hh,':',mm,':',ss,']' ! jw
+	write(pw_run_log,'(A35,I10)') 'Number of OpenMP threads = ', nthreads
 	write(pw_run_log,*) " "
 	write(pw_run_log,*) 'The End.'
 	write(pw_run_log,*) "!==============================================================================!"
@@ -65,10 +66,11 @@ subroutine closing_message
 	&                "Today is (yyyy:mm:dd - hh:mm:ss): ", &
 	&                 values(1),":",values(2),":",values(3)," - ",values(5),":",values(6),":",values(7) 
 	
-	write(*,'(A22,F10.0,A10)') &
+	write(*,'(A35,F10.0,A10)') &
 	&						"Total cpu time     = ", finish - start,"seconds" 		! jw
-	write(*,'(A22,F10.0,A10, A1,I2,A1,I2,A1,I2,A1)') &
+	write(*,'(A35,F10.0,A10, A1,I2,A1,I2,A1,I2,A1)') &
 	&						"Total elapsed time = ", total_elapsed_time,"seconds", '[',hh,':',mm,':',ss,']' ! jw
+	write(*,'(A35,I10)') 'Number of OpenMP threads = ', nthreads
 	write(*,*) " "
 	write(*,*) 'The End.'
 	write(*,*) "!==============================================================================!"

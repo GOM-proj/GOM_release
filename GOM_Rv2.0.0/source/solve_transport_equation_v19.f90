@@ -567,7 +567,7 @@ subroutine solve_transport_equation_v19
 					dz_old = dz_face(k,j) + (dz_face_new(k,j) - dz_face(k,j))*(subcycle)/Nt
 					Q_jk_theta(k,j) = face_length(j)*dz_old &
 					&						*((1.0-theta)*un_face(k,j) + theta*un_face_new(k,j))
-					D_jk_old(k,j) = face_length(j) * dz_old * Kh(k,j) &
+					D_jk_old(k,j) = face_length(j) * dz_old * Kh_face(k,j) &
 					&					/delta_j(j)
 					d_jk_theta(k,j) = max(0.0, D_jk_old(k,j) - 0.5*abs(Q_jk_theta(k,j)))
 					
@@ -596,7 +596,7 @@ subroutine solve_transport_equation_v19
 					
 					! jw
 					dz_old = dzhalf_cell(k,i) + (dzhalf_cell_new(k,i) - dzhalf_cell(k,i))*(subcycle)/Nt
-					D_ik_old(k,i) = area(i)*Kv(k,i)/dz_old
+					D_ik_old(k,i) = area(i)*Kv_cell(k,i)/dz_old
 					d_ik_theta(k,i) = max(0.0, D_ik_old(k,i) - 0.5*abs(Q_ik_theta(k,i)))
 						
 					! jw

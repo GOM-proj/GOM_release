@@ -31,6 +31,8 @@ subroutine welcome_message
 	write(pw_run_log,*) "GOM is developed by Jungwoo Lee & Jun Lee."
 	write(pw_run_log,*) "Then, good luck!"
 	write(pw_run_log,*) " "
+	write(pw_run_log,'(A35,I10)') "Number of OpenMP threads = ", nthreads
+! jw
 	write(pw_run_log,'(A35,I4,A1,I4,A1,I2, A3, I2,A1,I2,A1,I2)') 					&
 	&                "Today is (yyyy:mm:dd - hh:mm:ss): ", 							&
 	&                 values(1),":",values(2),":",values(3)," - ",values(5),":",values(6),":",values(7) 
@@ -49,10 +51,11 @@ subroutine welcome_message
 	write(*,*) "GOM is developed by Jungwoo Lee & Jun Lee."
 	write(*,*) "Then, good luck!"
 	write(*,*) " "
+	write(*,'(A35,I10)') "Number of OpenMP threads = ", nthreads
 	write(*,'(A35,I4,A1,I2,A1,I2, A3, I2,A1,I2,A1,I2)') &
 	&                "Today is (yyyy:mm:dd - hh:mm:ss): ", &
 	&                 values(1),":",values(2),":",values(3)," - ",values(5),":",values(6),":",values(7) 
-	write(*,'(A22,F10.0,A10)') "Total elapsed time = ", start,"seconds"
+	write(*,'(A35,F10.0,A10)') "Total elapsed time = ", start,"seconds"
 	write(*,*) "!==============================================================================!"
 	write(*,*) "Now, GOM is scanning main input file - main.inp"
 	write(*,*) "."

@@ -139,7 +139,7 @@ subroutine solve_transport_equation_ELM_v8
 				j = facenum_at_cell(l,i)
 				ie = adj_cellnum_at_face(2,j)
 				if(ie /= 0) then ! jw
-					rtemp1 = face_length(j)*dz_face(k,j)*Kh(k,j)/delta_j(j)
+					rtemp1 = face_length(j)*dz_face(k,j)*Kh_face(k,j)/delta_j(j)
 					sum1 = sum1 + rtemp1*(salt_cell(k,ie) - salt_cell(k,i))
 					sum2 = sum2 + rtemp1*(temp_cell(k,ie) - temp_cell(k,i))
 				end if
@@ -173,8 +173,8 @@ subroutine solve_transport_equation_ELM_v8
 		! jw
       do k=bottom_layer_at_element(i)+1,top_layer_at_element(i)-1
          kk = top_layer_at_element(i) - k + 1 ! jw
-         a_lower_mat(kk) = -dt * Kv(k  ,i)/dzhalf_cell(k  ,i)
-         c_upper_mat(kk) = -dt * Kv(k-1,i)/dzhalf_cell(k-1,i)
+         a_lower_mat(kk) = -dt * Kv_cell(k  ,i)/dzhalf_cell(k  ,i)
+         c_upper_mat(kk) = -dt * Kv_cell(k-1,i)/dzhalf_cell(k-1,i)
          b_diagonal_mat(kk) = -a_lower_mat(kk) + dz_cell(k,i) - c_upper_mat(kk)
       end do
 
@@ -185,12 +185,12 @@ subroutine solve_transport_equation_ELM_v8
       else 
 			! jw
 			! jw
-         c_upper_mat(1) = -dt + Kv(top_layer_at_element(i)-1,i) / dzhalf_cell(top_layer_at_element(i)-1,i)
+         c_upper_mat(1) = -dt + Kv_cell(top_layer_at_element(i)-1,i) / dzhalf_cell(top_layer_at_element(i)-1,i)
          b_diagonal_mat(1) = dz_cell(top_layer_at_element(i),i) - c_upper_mat(1)
 
 			! jw
 			! jw
-         a_lower_mat(num_vertical_layer) = -dt * Kv(bottom_layer_at_element(i),i) / dzhalf_cell(bottom_layer_at_element(i),i)	         
+         a_lower_mat(num_vertical_layer) = -dt * Kv_cell(bottom_layer_at_element(i),i) / dzhalf_cell(bottom_layer_at_element(i),i)	         
          b_diagonal_mat(num_vertical_layer) = - a_lower_mat(num_vertical_layer) + dz_cell(bottom_layer_at_element(i),i)            
      	end if
 		! jw

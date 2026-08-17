@@ -6,6 +6,7 @@ FC = gfortran
 FCFLAGS = -O2
 FCFLAGS += -fopenmp
 #FCFLAGS_LINK = -fopenmp
+FCFLAGS += -ffpe-summary=none # suppress underflow and denormal log
 
 # Activate debugging options -------------------------------------------------#
 #FCFLAGS = -g
@@ -142,6 +143,7 @@ objects = \
 	write_netcdf_grid.o \
 	write_netcdf_head.o \
 	write_netcdf_body.o \
+	turbulence_closure_ke.o\
 	main.o
 
 all: $(objects)
@@ -164,6 +166,6 @@ clean:
 # This is for the Windows user
 #clean:
 #	del -f *.o *.mod *.MOD *.exe
-	
+
 # End of makefile ============================================================#
 #=============================================================================#

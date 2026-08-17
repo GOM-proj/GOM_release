@@ -41,6 +41,11 @@ subroutine calculate_bottom_friction
 				
 				! jw
            	Gamma_B(j) = Cdb(j)*dsqrt(un_face(k,j)**2+vn_face(k,j)**2) ! jw
+           	
+           	! jw
+           	! jw
+           	! jw
+				bf_height(j) = (dz_face(bottom_layer_at_face(j),j)*0.5_dp)**(-von_Karman*h_face(j)**expo/(manning(j)*sqrt(gravity)))
          end if
 		end do
 		!$omp end parallel do

@@ -124,7 +124,7 @@ subroutine write_netcdf_body
 					call netcdf_check(nf90_put_var(ncid, varid_rho_cell, rho_cell, &
 					&	start=(/1,1,netcdf_buff3/), count=(/maxlayer,maxele,1/)))
 				else if(i==6) then ! jw
-					call netcdf_check(nf90_put_var(ncid, varid_Kv, Kv, &
+					call netcdf_check(nf90_put_var(ncid, varid_Kv, Kv_cell, &
 					&	start=(/1,1,netcdf_buff3/), count=(/maxlayer+1,maxele,1/)))
 				end if
 			end if
@@ -136,10 +136,10 @@ subroutine write_netcdf_body
 		do i=1,2
 			if(netcdf_variable_face(i) == 1) then
 				if(i==1) then ! jw
-					call netcdf_check(nf90_put_var(ncid, varid_Av, Av, &
+					call netcdf_check(nf90_put_var(ncid, varid_Av, Av_face, &
 					&	start=(/1,1,netcdf_buff3/), count=(/maxlayer+1,maxface,1/)))
 				else if(i==2) then ! jw
-					call netcdf_check(nf90_put_var(ncid, varid_Kh, Kh, &
+					call netcdf_check(nf90_put_var(ncid, varid_Kh, Kh_face, &
 					&	start=(/1,1,netcdf_buff3/), count=(/maxlayer,maxface,1/)))
 				end if
 			end if

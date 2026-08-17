@@ -108,11 +108,11 @@ subroutine allocate_variables
    &			vn_face(maxlayer,maxface),					&	! jw
    &			un_face_new(maxlayer,maxface),			&	! jw
    &			vn_face_new(maxlayer,maxface),			&	! jw
-   &			Av(0:maxlayer,maxface),						&	! jw
-   &			Kv(0:maxlayer,maxele),						&	! jw
+   &			Av_face(0:maxlayer,maxface),				&	! jw
+   &			Kv_cell(0:maxlayer,maxele),				&	! jw
+   &			Kv_face(0:maxlayer,maxface),				&	! jw
 ! jw
-! jw
-   &			Kh(maxlayer,maxface))							! jw
+   &			Kh_face(maxlayer,maxface))						! jw
    dz_face 				= 0.0_dp
    dz_face_new			= 0.0_dp
    dzhalf_face_new	= 0.0_dp
@@ -121,11 +121,16 @@ subroutine allocate_variables
    vn_face 				= 0.0_dp
    un_face_new 		= 0.0_dp
    vn_face_new			= 0.0_dp
-   Av 					= 0.0_dp
-   Kv 					= 0.0_dp
+   Av_face				= 0.0_dp
+   Kv_cell				= 0.0_dp
+   Kv_face				= 0.0_dp
 ! jw
-! jw
-	Kh						= 0.0_dp
+	Kh_face				= 0.0_dp
+	
+	allocate(TKE_k_face(0:maxlayer,maxface), 			&
+	&			TKE_e_face(0:maxlayer,maxface))
+	TKE_k_face			= 0.0_dp
+	TKE_e_face			= 0.0_dp
 	
    allocate(bed_elev(maxele),	&	! jw
    &			lon_cell(maxele), &	! jw
@@ -561,7 +566,7 @@ subroutine allocate_variables
 	netcdf_variable_name_cell(3) = 'salt_cell'
 	netcdf_variable_name_cell(4) = 'temp_cell'
 	netcdf_variable_name_cell(5) = 'rho_cell'
-	netcdf_variable_name_cell(6) = 'Kv'
+	netcdf_variable_name_cell(6) = 'Kv_cell'
 
 	! jw
 	netcdf_variable_name_node(1) = 'eta_node'
@@ -581,8 +586,8 @@ subroutine allocate_variables
 	netcdf_variable_name_node(15) = 'rbar_node'
 
 	! jw
-	netcdf_variable_name_face(1) = 'Av'
-	netcdf_variable_name_face(2) = 'Kh'
+	netcdf_variable_name_face(1) = 'Av_face'
+	netcdf_variable_name_face(2) = 'Kh_face'
 
 	!===	END =================================================================!
 	

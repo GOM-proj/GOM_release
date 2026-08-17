@@ -52,12 +52,12 @@ subroutine scan_gom
 	call read_cell_inp
 	
 	! jw
-	card_num = "C7"
+	card_num = "C8"
 	call seek_card(card_num)
 	read(pw_main_inp,*) transport_flag ! jw
 	
 	if(transport_flag == 1) then
-		card_num = "C7_2"
+		card_num = "C8_2"
 		call seek_card(card_num)
 		
 		maxtran2 = 0

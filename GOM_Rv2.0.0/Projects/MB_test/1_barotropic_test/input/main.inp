@@ -16,7 +16,7 @@ C00	TITLE FOR RUN
 !									(LIMIT TO 200 CHARACTERS LENGTH)
 !
 C00	project_name
-  		Mobile_Bay:_GOM_v89_synchronized
+  		Mobile_Bay:_GOM_v91_source_v4_synchronized
 !=============================================================================!
 C01	Define some global parameters before we start
 !		Generally, users don't need to change these values.
@@ -48,7 +48,7 @@ C1		Read coordinate frame flag and check it
 !		cell_mirr:			[i]	0/1	off/on, Write mirror image file (cell_mirr.dat)
 !
 C1		maxnod	maxele	h_node_adjust	ana_depth	coordinate_system		lon		lat	voronoi	node_mirr	cell_mirr
-		18718	   35127 	0.0				0				1							-128.0	37.5		0			1				1
+		18718	   35127 	0.0				0				1							-88.0		30.5	0			1				1
 !=============================================================================!
 C2		Read vertical layer information
 !
@@ -108,7 +108,8 @@ C3		dt			ndt	data_start_year	data_time_shift	start_year	start_month	start_day	st
 !		 60.0		460	2010					212 					2010			8				1				0				0					0  				! (720=0.5 day, 1440=1.0 day,7200=5.0 day,14400=10 day, 43200 = 30 day, 87840 = 61 day)
 !		 90.0		240	2010					212  					2010			8				1				0				0					0  				! (480=0.5 day, 960=1.0 day, 4800=5.0 day, 9600=10 day, 28800 = 30 day, 58560 = 61 day, 172800 = 180 day)
 !		150.0		5760 	2010					212 					2010			8				1				0				0					0  				! (288=0.5 day, 576=1.0 day, 2880=5.0 day, 5760=10 day, 17280 = 30 day, 35136 = 61 day)
-		300.0		1440	2010					212 					2010			8				1				0				0					0  				! (144=0.5 day, 288=1.0 day, 1440=5.0 day, 2880=10 day, 8640 = 30 day, 17568 = 61 day)
+!		300.0		17568	2010					212 					2010			8				1				0				0					0  				! (144=0.5 day, 288=1.0 day, 1440=5.0 day, 2880=10 day, 8640 = 30 day, 17568 = 61 day)
+		300.0		288	2010					212 					2010			8				1				0				0					0  				! (144=0.5 day, 288=1.0 day, 1440=5.0 day, 2880=10 day, 8640 = 30 day, 17568 = 61 day)
 !		600.0		720 	2010					212					2010			8				1				0				0					0  				! (72=0.5 day, 144=1.0 day, 720=5.0 day, 1440=10 day, 4320 = 30 day, 8784 = 61 day)
 !	  1800.0		2928 	2010					212					2010			8				1				0				0					0  				! (24=0.5 day, 48=1.0 day, 240=5.0 day, 480=10 day, 1440 = 30 day, 2928 = 61 day)
 !=============================================================================!
@@ -221,16 +222,45 @@ C5_04	Smagorinsky_parameter	Ah_0	Kh_0	Av_0		Kv_0
 !		0.021							0.00	40.0	1.e-2    1.e-4		! 
 		0.021							0.00	00.0	0.00     1.e-4		! 
 !=============================================================================!
-C6		Matrix solver option for Jacobi Preconditioned Conjugate Gradient (PCG) method:
+C6		off/on Turbulence Closure Models
+! 		If one of the following turbulence closure models is activated, previously defined Av & Kv (in C5_04) will be overwritten.
+!
+!		turbulence_flag	[i]	0/1 	off/on, global turn off/on flag for turbulence closure models
+!		turbulence_model	[i]	1		k-e turbulence closure model
+!										2		k-w turbulence closure model, not yet implemented
+!										3		Mellor-Yamada 2.5, not yet implemented
+!
+C6		turbulence_flag	turbulence_model
+		1						1
+!=============================================================================!
+C6_1	k-e turbulence closure model variables
+!		Activate if turbulence_flag == 1 & turbulence_model == 1
+!
+!		C_mu					[r]	Eddy viscosity coefficient
+!		sigma_t				[r]	Turbulent Prandtl number
+!		sigma_k				[r]	Prandtl number for k
+!		sigma_e				[r]	Prandtl number for e
+!		c1_eps				[r]	Production coefficient
+!		c2_eps				[r]	Dissipation coefficient
+!		c3_eps				[r]	Buoyancy coefficient
+!										0.0 for stable stratification
+!										1.0 for unstable stratification
+!		k_min					[r]	minimum value of k
+!		eps_min				[r]	minimum value of epsilon
+!
+C6_1	C_mu	sigma_t	sigma_k	sigma_e	c1_eps	c2_eps	c3_eps	k_min		eps_min
+		0.09	0.9		1.0		1.3		1.44		1.92		1.0		1.e-6		1.e-8
+!=============================================================================!
+C7		Matrix solver option for Jacobi Preconditioned Conjugate Gradient (PCG) method:
 !
 !		max_iteration_pcg	[i]		Maximum number of iteration
 !		error_tolerance	[r]		The stopping criterion or approximate relative accuracy desired in the final computed solution.
 ! 		pcg_result_show	[i]		0/1	off/on, PCG solver results show
 ! 											If it is on, GOM will show the converging iteration number both on the screen and the log file, run.log.	
-C6		max_iteration_pcg		error_tolerance	pcg_result_show
+C7		max_iteration_pcg		error_tolerance	pcg_result_show
  		1000						5.e-6					0
 !=============================================================================!
-C7		off/on tranport equations & selection of the solver
+C8		off/on tranport equations & selection of the solver
 !
 !		transport_flag		[i]	0/1	off/on, global turn off/on flag for transport equation
 ! 												If transport_flag == 0, following variables will be automatically turned off.	
@@ -238,11 +268,11 @@ C7		off/on tranport equations & selection of the solver
 ! 										1		TVD scheme
 !										2		Eulerian Lagrangian Method (ELM)
 ! 
-C7		transport_flag		transport_solver
+C8		transport_flag		transport_solver
 		0  					1
 !=============================================================================!
-C7_1	TVD solver
-!		Activate if transport_flag == 1 & transport_solver == 1 in C7
+C8_1	TVD solver
+!		Activate if transport_flag == 1 & transport_solver == 1 in C8
 !
 ! 		trans_sub_iter		[i]	N		Number of sub iteration (sub-cycling) for the TVD transport eqaution
 !										0,1	No sub-iteration
@@ -252,7 +282,7 @@ C7_1	TVD solver
 !		v_flux_limiter		[i]	0~3	Flux limiter functions for vertical:
 !										0: No flux limiter (i.e., 1st-order upwind), 1: Minmod, 2: van Leer, 3: Superbee
 !
-C7_1	trans_sub_iter		h_flux_limiter		v_flux_limiter
+C8_1	trans_sub_iter		h_flux_limiter		v_flux_limiter
 !		0						0						0					
 !		3						0						0
 !		6						3						3
@@ -261,7 +291,7 @@ C7_1	trans_sub_iter		h_flux_limiter		v_flux_limiter
 !		120					1						1
 !		150					3						3					
 !=============================================================================!
-C7_2	Turn off/on transport variables
+C8_2	Turn off/on transport variables
 !		Activate if transport_flag == 1
 ! 
 ! 		is_tran	[i]	0/1	off/on, transported scalar materials; note, currently GOM has two materials; it will be expanded step by step.
@@ -273,11 +303,11 @@ C7_2	Turn off/on transport variables
 ! 									1 = ***_ser1.inp (useful if each station has different time record)
 ! 									2 = ***_ser2.inp (useful if each station has identical time record)
 ! 
-C7_2	is_tran	num_tran_ser	tran_ser_shape
+C8_2	is_tran	num_tran_ser	tran_ser_shape
 !		1			3					1					! salinity; salt_ser.inp
 !		1			3					1					! temperature; temp_ser.inp
 !=============================================================================!
-C7_3	Heat transport control variables 1
+C8_3	Heat transport control variables 1
 !		Activate if transport_flag == 1 & is_tran[2] == 1; i.e., only if temperature transport is activated.
 !
 !		heat_option			[i]	1/2	Short-wave solar radiation computation option
@@ -291,10 +321,10 @@ C7_3	Heat transport control variables 1
 !		fWz_c					[r]			empirical evaporation coefficient c; default = 2.0
 !		wind_height			[r]			wind speed measurement height [m] in air_ser.inp; typically either 2.0[m] or 10.0[m]
 !
-C7_3	heat_option		sol_swr	fWz_a		fWz_b		fWz_c		wind_height		
+C8_3	heat_option		sol_swr	fWz_a		fWz_b		fWz_c		wind_height		
 !		1					2			9.2		0.46		2.0		2.0
 !=============================================================================!
-C7_4	Heat transport control variables 2 - surface/bottom boundary related coefficients
+C8_4	Heat transport control variables 2 - surface/bottom boundary related coefficients
 !		Activate if transport_flag == 1 & is_tran[2] == 1; i.e., only if temperature transport is activated.
 !
 !		light_extinction 		[r]	light extinction coefficient, Kd, [1/m]; default = 0.45
@@ -304,10 +334,10 @@ C7_4	Heat transport control variables 2 - surface/bottom boundary related coeffi
 !		sed_temp_coeff			[r]	sediment temperature coefficient (0 ~ 1); Heat lost to sediments that is added back to water column
 ! 											e.g., 0: 0% of the shortwave solar radiation is reradiated into the water column resulting in a loss of the solar radiation from the system.
 ! 
-C7_4	light_extinction	sol_absorb	sed_water_exchange	T_sed		sed_temp_coeff
+C8_4	light_extinction	sol_absorb	sed_water_exchange	T_sed		sed_temp_coeff
 !		0.45					0.45			0.3						11.5		0.0
 !=============================================================================!
-C8		Model termination control
+C9		Model termination control
 !
 !		terminate_check_freq:	[i]	N	Check model termination criteria at every terminate_freq period (N * dt seconds)
 !		eta_min_terminate:		[r]	Model termination criterion by minimum water surface elevation [m]
@@ -316,7 +346,7 @@ C8		Model termination control
 !		salt_terminate:			[r]	Model termination criterion by maximum salinity [ppt]
 !		temp_terminate:			[r]	Model termination criterion by maximum water temperature [Celcius]
 !
-C8		terminate_check_freq		eta_min_terminate		eta_max_terminate		uv_terminate	salt_terminate		temp_terminate
+C9		terminate_check_freq		eta_min_terminate		eta_max_terminate		uv_terminate	salt_terminate		temp_terminate
 !		8640  						-3.0						3.0						5.0				50.0					50.0							! every day; dt = 10
 !		2880  						-3.0						3.0						5.0				50.0					50.0							! every day; dt = 30
 !		1440  						-3.0						3.0						5.0				50.0					50.0							! every day; dt = 60
@@ -548,7 +578,7 @@ C24_1	Source/Sink (SS) point boundary information
 !		Activate if num_SS_cell > 0. num_SS_cell lines are required.
 !
 ! 		serial_num		[i]	Station number (dummy number)
-!		SS_cell 			[i]	Cell (or element) nuumber of the station
+!		SS_cell 			[i]	Cell (or element) number of the station
 !		SS_layer			[i]	Source/Sink vertical layer
 !									999 	= anytime surface layer
 ! 									1 ~ N	= specific vertical layer
@@ -893,7 +923,7 @@ C46	NetCDF dump file:
 !		netcdf_end:			[i]	NetCDF data end time (simulation step)
 !
 C46	netcdf_switch	netcdf_File_freq	netcdf_frequency	netcdf_start	netcdf_end
-		1					288					12						1					999999 	! dt = 300 / every 1day simulation /every 1 hr
+		0					288					12						1					999999 	! dt = 300 / every 1day simulation /every 1 hr
 !		1					24					   12						1					999999 	! dt = 300 / every 2hr simulation /every 1 hr
 !-----------------------------------------------------------------------------!
 C46_1	NetCDF output variable selection at node
@@ -942,7 +972,7 @@ C46_2	NetCDF output variable selection at cell center
 !			salt_cell:				(maxlayer,maxele)		salinity at cell center [psu]
 !			temp_cell:				(maxlayer,maxele)		temperature at cell center [C]
 !			rho_cell:				(maxlayer,maxele)		rho at element center [kg/m3]
-!			Kv:						(0:maxlayer,maxele)	vertical eddy diffusivity at cell [m2/s]
+!			Kv_cell:					(0:maxlayer,maxele)	vertical eddy diffusivity at cell [m2/s]
 !
 C46_2	variable						netcdf_variable_cell(:)
 			eta_cell					0
@@ -950,18 +980,18 @@ C46_2	variable						netcdf_variable_cell(:)
 			salt_cell				0
 			temp_cell				0
 			rho_cell					0
-			Kv							0
+			Kv_cell					0
 !-----------------------------------------------------------------------------!
 C46_3	NetCDF output variable selection at face
 !		It will be used only if (Netcdf_switch == 1), so do not deactivate this card.
 !
 !		netcdf_variable_face:	[i]	0/1	off/on option for each variable
-!			Av:						(0:maxlayer,maxface)	vertical eddy viscosity [m2/s]
-! 			Kh:						(maxlayer,maxface)	Horizontal diffusivity [m2/s]
+!			Av_face:					(0:maxlayer,maxface)	vertical eddy viscosity [m2/s]
+! 			Kh_face:					(maxlayer,maxface)	Horizontal diffusivity [m2/s]
 !
 C46_3	variable						netcdf_variable_face(:)
-			Av:						1
- 			Kh:						0
+			Av_face:					1
+ 			Kh_face:					0
 !=============================================================================!
 C47	Write diagonostic files for important subroutines
 !

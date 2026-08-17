@@ -271,38 +271,63 @@ subroutine read_main_inp
 				! jw
 				do j=1,maxface
 					do k=1,maxlayer
-						Av(k,j) = Av_0
+						Av_face(k,j) = Av_0
 					end do
 				end do
 				
 				do i=1,maxele
 					do k=1,maxlayer
-						Kv(k,i) = Kv_0
+						Kv_cell(k,i) = Kv_0
 					end do
 				end do
 									
 			   card_num = "6"
-			case("6") ! jw
+			case("6")	! jw
+				read(pw_main_inp,*) turbulence_flag, turbulence_model
+				write(pw_main_mirr,*) turbulence_flag, turbulence_model
+
+				if(turbulence_flag == 0) then
+					card_num = "7"
+				else if(turbulence_flag == 1) then
+					if(turbulence_model == 1) then
+						card_num = "6_1"
+					else if(turbulence_model == 2) then ! jw
+						card_num = "6_2"
+					else if(turbulence_model == 3) then ! jw
+						card_num = "6_3"
+					end if
+				end if
+			
+			case("6_1")	! jw
+				read(pw_main_inp,*) C_mu, sigma_t, sigma_k, sigma_e, c1_eps, c2_eps, c3_eps, k_min, eps_min
+				write(pw_main_mirr,*) C_mu, sigma_t, sigma_k, sigma_e, c1_eps, c2_eps, c3_eps, k_min, eps_min
+				
+				! jw
+				TKE_k_face = MAX(TKE_k_face, k_min)
+				TKE_e_face = MAX(TKE_e_face, eps_min)
+				
+				card_num = "7"
+			case("7") ! jw
 				read(pw_main_inp,*) max_iteration_pcg, error_tolerance, pcg_result_show
 				write(pw_main_mirr,*) max_iteration_pcg, error_tolerance, pcg_result_show
-				card_num = "7"
-			case("7")	! jw
+				card_num = "8"
+			case("8")	! jw
 				read(pw_main_inp,*) transport_flag, transport_solver
 				write(pw_main_mirr,*) transport_flag, transport_solver
 
 				if(transport_flag == 0) then
-					card_num = "8"
+					card_num = "9"
 				else if(transport_flag == 1 .and. transport_solver == 1) then
-					card_num = "7_1"
+					card_num = "8_1"
 				else if(transport_flag == 1 .and. transport_solver == 2) then
-					card_num = "7_2"
+					card_num = "8_2"
 				end if
-			case("7_1")	! jw
+			case("8_1")	! jw
 				read(pw_main_inp,*) trans_sub_iter, h_flux_limiter, v_flux_limiter
 				write(pw_main_mirr,*) trans_sub_iter, h_flux_limiter, v_flux_limiter
 				
-				card_num = "7_2"
-			case("7_2") ! jw
+				card_num = "8_2"
+			case("8_2") ! jw
 				ii = 0
 				do i=1,maxtran ! jw
 					read(pw_main_inp,*) is_tran(i), num_tran_ser(i), tran_ser_shape(i)
@@ -360,24 +385,24 @@ subroutine read_main_inp
 				end if
 				
 				if(is_tran(2) == 1) then
-					card_num = "7_3"
+					card_num = "8_3"
 				else
-					card_num = "8"	
+					card_num = "9"	
 				end if
 				
-			case("7_3")
+			case("8_3")
 				read(pw_main_inp,*) heat_option, sol_swr, fWz_a, fWz_b, fWz_c, wind_height
 				write(pw_main_mirr,*) heat_option, sol_swr, fWz_a, fWz_b, fWz_c, wind_height
 				
-				card_num = "7_4"
+				card_num = "8_4"
 			
-			case("7_4")
+			case("8_4")
 				read(pw_main_inp,*) light_extinction, sol_absorb, sed_water_exchange, T_sed, sed_temp_coeff
 				write(pw_main_mirr,*) light_extinction, sol_absorb, sed_water_exchange, T_sed, sed_temp_coeff
 				
-				card_num = "8"
+				card_num = "9"
 			
-			case("8") ! jw
+			case("9") ! jw
 				read(pw_main_inp,*) &
 				&	terminate_check_freq, eta_min_terminate, eta_max_terminate, uv_terminate, salt_terminate, temp_terminate
 				write(pw_main_mirr,*) &

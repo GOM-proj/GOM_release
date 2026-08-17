@@ -17,6 +17,9 @@ module mod_global_variables
 	integer, save :: gom_start_year, gom_start_month, gom_start_day, gom_start_hour, gom_start_minute, gom_start_second			! jw
 	integer, save :: gom_finish_year, gom_finish_month, gom_finish_day, gom_finish_hour, gom_finish_minute, gom_finish_second	! jw
 	
+	!! === OpenMP variables ==================================================!!
+	integer, save :: nthreads
+	
 	!! === Parameters ========================================================!!
    real(dp),parameter :: small_06	=	1.e-6
 	
@@ -126,7 +129,7 @@ module mod_global_variables
    real(dp),save :: Kh_0									! jw
    real(dp),save :: Smagorinsky_parameter
 	real(dp),save,allocatable,dimension(:,:) :: &	! jw
-	&			Kh													! jw
+	&			Kh_face											! jw
 	
 	real(dp),save :: Av_0									! jw
 	real(dp),save :: Kv_0									! jw
@@ -140,27 +143,49 @@ module mod_global_variables
    ! jw
    ! jw
    ! jw
-   &			Av													! jw
+   &			Av_face											! jw
    
 	real(dp),save,allocatable,dimension(:,:) :: 	&
-	&			Kv													! jw
-! jw
+	&			Kv_cell,										&	! jw
+ 	&			Kv_face											! jw
 ! jw
 
-	!! C6		Matrix solver option: OpneMP version of the Jacobi Preconditioned Conjugate Gradient method:
+	!! C6  Turbulence closure model variables ---------------------------------!
+	integer, save ::										&
+	&			turbulence_flag,							&
+	&			turbulence_model
+
+	!! C6_1	k-e turbulence closure model -------------------------------------!
+	real(dp),save :: 										&
+	&			C_mu,											& 	! jw
+	&			sigma_t,										&	! jw
+	&			sigma_k, 									&	! jw
+	&			sigma_e,										&	! jw
+	&			c1_eps,										&	! jw
+	&			c2_eps,										&	! jw
+	&			c3_eps,										&	! jw
+	&			k_min,										& 	! jw
+	&			eps_min											! jw
+		
+	! jw
+	real(dp),save,allocatable,dimension(:,:) ::	&
+	&			TKE_k_face,									&	! jw
+	&			TKE_e_face										! jw
+
+	!! C7		Matrix solver option: OpneMP version of the Jacobi Preconditioned Conjugate Gradient method:
 	integer, save :: max_iteration_pcg
 	real(dp),save :: error_tolerance
 	integer, save :: pcg_result_show
 
 
 
-	!! C7		off/on tranport equations & selection of the solver -----------------!	
+	!! C8		off/on tranport equations & selection of the solver -----------------!	
 	integer,save :: transport_flag, transport_solver
 
-	!! C7_1	TVD solver -------------------------------------------------------!
+	!! C8_1	TVD solver -------------------------------------------------------!
 	integer,save :: trans_sub_iter, h_flux_limiter, v_flux_limiter
 	
-	!! C7_2	Turn off/on transport variables ----------------------------------!
+	!! C8_2	Turn off/on transport variables ----------------------------------!
 	! jw
 	! jw
 	integer,save :: is_tran(2)=0
@@ -191,11 +216,11 @@ module mod_global_variables
 	real(dp),save,allocatable,dimension(:,:) :: salt_at_obck	! jw
 	real(dp),save,allocatable,dimension(:) :: salt_at_Qbc 	! jw
 	
-	!! C7_3	Heat transport control variables 1 -------------------------------!
+	!! C8_3	Heat transport control variables 1 -------------------------------!
 	integer,save :: heat_option, sol_swr
 	real(dp),save:: fWz_a, fWz_b, fWz_c, wind_height
 	
-	!! C7_4 	Heat transport control variables 2 -------------------------------!
+	!! C8_4 	Heat transport control variables 2 -------------------------------!
 	real(dp),save:: light_extinction, sol_absorb, sed_water_exchange, T_sed, sed_temp_coeff
 	
 	! jw
@@ -236,7 +261,7 @@ module mod_global_variables
    &			temp_ob											! jw
 
 	
-	!! C8		Model termination control ----------------------------------------!
+	!! C9		Model termination control ----------------------------------------!
 	integer, save :: terminate_check_freq
 	real(dp),save :: eta_min_terminate,	eta_max_terminate, uv_terminate, salt_terminate, temp_terminate
 	
@@ -939,7 +964,7 @@ module mod_global_variables
    real(dp),save :: qd, qd2, vd, td
       
    real(dp),save :: schk, schpsi
-   real(dp),save :: cmiu0, cpsi1, cpsi2, rpub, rmub, rnub, psimin, eps_min, bgdiff, h1_pp, h2_pp,   &
+   real(dp),save :: cmiu0, cpsi1, cpsi2, rpub, rmub, rnub, psimin, bgdiff, h1_pp, h2_pp,   &
    &       	tdmin_pp, vdmax_pp2, vdmin_pp2, vdmax_pp1, vdmin_pp1 , q2min 
 
    real(dp),save,allocatable,dimension(:) :: 	&
@@ -953,6 +978,9 @@ module mod_global_variables
    &        initial_temperature_field_flag, initial_salinity_field_flag,      &
    &        i_transport_model_flag
    integer, save :: ifile
+
+
+
 	! jw
 	!==========================================================================!
 	
@@ -975,6 +1003,7 @@ module mod_global_variables
 	&			srho,											&	! jw
 	&			erho,											&	! jw
 	&			prho												! jw
+	
 	
 end module mod_global_variables
 

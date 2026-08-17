@@ -2,7 +2,12 @@
 !! GOM is developed by Jungwoo Lee & Jun Lee
 !! ===========================================================================! 
 program main
+
 ! jw
+! jw
+#ifdef _OPENMP
+	use omp_lib
+#endif	
    use mod_global_variables
    use mod_file_definition
 	implicit none
@@ -11,6 +16,16 @@ program main
    ! jw
 ! jw
 	
+	! jw
+	! jw
+	nthreads = 1 ! jw
+#ifdef _OPENMP
+	!$omp parallel
+	!$omp single
+		nthreads = omp_get_num_threads()
+	!$omp end single
+	!$omp end parallel
+#endif	
 	! jw
 	call welcome_message
 ! jw
@@ -142,7 +157,11 @@ program main
 			call ana_windp ! jw
 		end if
 ! jw
-
+		
+		! jw
+		if(turbulence_flag == 1) then
+			call turbulence_closure_ke
+		end if
 		!=======================================================================!
 		! jw
 		! jw
