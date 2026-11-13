@@ -484,8 +484,8 @@ subroutine solve_momentum_equation
             end do ! jw
 
 				! jw
- 				rtemp1 = dz_face(k,j)*(-gravity*dt/(rho_o*delta_j(j)))*sum1 ! jw
- 				rtemp2 = dz_face(k,j)*(-gravity*dt/(rho_o*face_length(j)))*sum2 ! jw
+ 				rtemp1 = dz_face(kk,j)*(-gravity*dt/(rho_o*delta_j(j)))*sum1 ! jw
+ 				rtemp2 = dz_face(kk,j)*(-gravity*dt/(rho_o*face_length(j)))*sum2 ! jw
 				
 				! jw
 ! jw
